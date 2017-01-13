@@ -1,0 +1,31 @@
+{
+  "name": "redux-saga-resources",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./dist",
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "redux-saga": "^0.14.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.21.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-stage-2": "^6.18.0"
+  },
+  "scripts": {
+    "build": "babel ./src --out-dir ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zaibot/redux-saga-resources.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "typings": "./index.d.ts",
+  "bugs": {
+    "url": "https://github.com/Zaibot/redux-saga-resources/issues"
+  },
+  "homepage": "https://github.com/Zaibot/redux-saga-resources#readme"
+}
