@@ -90,7 +90,7 @@ export function createEditor(name, options, resource, ...middlewares) {
 
   return {
     ...descriptor,
-    reducer: makeEditorReducer(descriptor),
+    reducer: makeEditorReducer(descriptor, options),
     saga: makeEditorSaga(descriptor, options, ...middlewares.map(f => f(descriptor)))
   }
 }

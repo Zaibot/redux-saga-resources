@@ -1,7 +1,7 @@
 import { makeTempKey } from '../tempKey';
 import { fields, stripFields } from '../fields';
 
-export default function reducer(descriptor) {
+export default function reducer(descriptor, options) {
     const { actions } = descriptor;
     return (state = { opened: false, loading: false, error: null, item: {} }, action) => {
         switch (action.type) {
@@ -15,7 +15,7 @@ export default function reducer(descriptor) {
                 return { ...state, opened: false, loading: true, item: descriptor.resource.create({ ...action.payload.item }) };
             }
             case actions.CREATE_SUCCESS: {
-                return { ...state, opened: false, loading: false, error: null, item: { ...state.item, ...action.payload.item } };
+                return { ...state, opened: options.createImmediately, loading: false, error: null, item: { ...state.item, ...action.payload.item } };
             }
             case actions.CREATE_FAILURE: {
                 return { ...state, opened: true, loading: false, error: action.payload.reason, item: { ...state.item, ...action.payload.item } };
