@@ -18,7 +18,7 @@ function applyMiddlewares(...middlwares) {
   });
 }
 
-function defaultMiddleware(descriptor) {
+function defaultMiddleware(descriptor, options) {
   const {
     resource
   } = descriptor;
@@ -28,7 +28,9 @@ function defaultMiddleware(descriptor) {
       yield put(descriptor.creators.doEdit(item));
     }
     else if (action.type === descriptor.actions.CREATE) {
-      yield put(resource.creators.doCreate(yield select(descriptor.selectors.item)));
+      if (options.createImmediately) {
+        yield put(resource.creators.doCreate(yield select(descriptor.selectors.item)));
+      }
     }
     else if (action.type === descriptor.actions.CREATE_FAILURE) {
       yield put(resource.creators.doCreateFailure(action.payload.item, action.payload.reason));
@@ -77,7 +79,7 @@ function defaultMiddleware(descriptor) {
   };
 }
 
-export default function makeSaga(descriptor, ...middlewares) {
+export default function makeSaga(descriptor, options, ...middlewares) {
   const {
     resource
   } = descriptor;
@@ -120,7 +122,7 @@ export default function makeSaga(descriptor, ...middlewares) {
       resource.actions.DELETE_FAILURE,
       resource.actions.RESET
   ];
-  const f = applyMiddlewares(...middlewares, defaultMiddleware(descriptor));
+  const f = applyMiddlewares(...middlewares, defaultMiddleware(descriptor, options));
   return function* internal() {
     yield takeEvery(actions, f);
   }

@@ -160,6 +160,10 @@ declare module "redux-saga-resources" {
         item(state): any;
         isItem(item): (state) => boolean;
     }
+    interface IEditorOptions {
+        createImmediately?: boolean;
+        id?: string;
+    }
     interface IEditorDescriptor {
         name: string;
         actions: IEditorActions;
@@ -179,11 +183,19 @@ declare module "redux-saga-resources" {
         (action, next: (action?) => any);
     }
 
-    interface IOptions {
+    interface IResourceOptions {
         id?: string;
     }
 
-    function createResource(name, options: IOptions, ...middlewares: IMiddlewareFactory[]): IResource;
-    function createEditor(name, options: IOptions, resource: IResource): IEditor;
-    function httpMiddleware(api, path): IMiddlewareFactory;
+    interface IHttpApiHandler {
+      get(path: string);
+      post(path: string, entity: any);
+      patch(path: string, entity: any);
+      put(path: string, entity: any);
+      del(path: string, entity: any);
+    }
+
+    function createResource(name: string, options: IResourceOptions, ...middlewares: IMiddlewareFactory[]): IResource;
+    function createEditor(name: string, options: IEditorOptions, resource: IResource): IEditor;
+    function httpMiddleware(api: IHttpApiHandler, path: string): IMiddlewareFactory;
 }

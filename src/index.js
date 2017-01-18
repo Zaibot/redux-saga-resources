@@ -75,6 +75,7 @@ import makeEditorSaga from './editor/saga';
 export function createEditor(name, options, resource, ...middlewares) {
   options = {
     id: 'id',
+    createImmediately: true,
     ...options
   }
 
@@ -90,7 +91,7 @@ export function createEditor(name, options, resource, ...middlewares) {
   return {
     ...descriptor,
     reducer: makeEditorReducer(descriptor),
-    saga: makeEditorSaga(descriptor, ...middlewares.map(f => f(descriptor)))
+    saga: makeEditorSaga(descriptor, options, ...middlewares.map(f => f(descriptor)))
   }
 }
 
