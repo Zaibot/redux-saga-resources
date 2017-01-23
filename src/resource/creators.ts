@@ -20,10 +20,10 @@ export default function creators(name, actions) {
         doDeleteSuccess: (item) => ({ type: actions.DELETE_SUCCESS, payload: { item } }),
         doDeleteFailure: (item, reason) => ({ type: actions.DELETE_FAILURE, payload: { item, reason } }),
 
-        doList: () => ({ type: actions.LIST, payload: {} }),
+        doList: (params) => ({ type: actions.LIST, payload: {} }),
         doListCancel: () => ({ type: actions.LIST_CANCEL, payload: {} }),
-        doListSuccess: (list) => ({ type: actions.LIST_SUCCESS, payload: { list } }),
-        doListFailure: (reason) => ({ type: actions.LIST_FAILURE, payload: { reason } }),
+        doListSuccess: (list, params) => ({ type: actions.LIST_SUCCESS, payload: { list, params } }),
+        doListFailure: (reason, params) => ({ type: actions.LIST_FAILURE, payload: { reason, params } }),
 
         doReset: () => ({ type: actions.RESET }),
     }

@@ -13,5 +13,6 @@ export default function selectors(name, options, hasSameId) {
         itemById: (id) => (state) => scope(state).list.filter(item => hasSameId(item, { [options.id]: id }))[0],
         itemByItem: (item) => (state) => scope(state).list.filter(existing => hasSameId(item, existing))[0],
         items: (state) => scope(state).list,
+        params: (state) => scope(state).params
     }
 }

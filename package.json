@@ -18,8 +18,11 @@
     "webpack-node-externals": "^1.5.4"
   },
   "scripts": {
-    "_prepublish": "webpack -p",
-    "nodemon": "nodemon -w webpack.config.js --exec \"webpack --watch\""
+    "prepublish": "npm run compile",
+    "clean": "rimraf es6/*",
+    "precompile": "npm run clean",
+    "compile": "npm run compile:ts",
+    "compile:ts": "tsc --outDir ./es6 --target ES6 --module commonjs ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -28,7 +31,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "_typings": "./typings.d.ts",
   "bugs": {
     "url": "https://github.com/Zaibot/redux-saga-resources/issues"
   },

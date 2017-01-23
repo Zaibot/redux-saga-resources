@@ -194,14 +194,14 @@ function sagaList(api: IHttpApiHandler, path: string, descriptor: IResource) {
         [fields.id]: descriptor.data.id(item),
         [fields.isRead]: true,
         ...item
-      }))));
+      })), action.params));
       yield* next();
     } else if (cancel) {
       // Cancelled.
       yield* next();
     } else {
       // Error.
-      yield put(descriptor.creators.doListFailure(`${res.status} ${res.statusText}`));
+      yield put(descriptor.creators.doListFailure(`${res.status} ${res.statusText}`, action.payload.params));
       yield* next();
     }
   };

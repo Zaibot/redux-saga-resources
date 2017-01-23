@@ -211,7 +211,7 @@ export default function reducer(descriptor) {
             }
             case actions.LIST_SUCCESS: {
                 // LIST - SUCCESS
-                return { ...state, loading: false, error: null, list: action.payload.list };
+                return { ...state, loading: false, error: null, list: action.payload.list, params: action.payload.params };
             }
             case actions.LIST_FAILURE: {
                 // LIST - FAILURE
@@ -219,7 +219,7 @@ export default function reducer(descriptor) {
             }
             case actions.RESET: {
                 // RESET
-                return { ...state, loading: false, error: null, list: [] };
+                return { ...state, loading: false, error: null, list: [], params: {} };
             }
             default: {
                 // Nothing.

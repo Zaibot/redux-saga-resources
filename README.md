@@ -1,5 +1,7 @@
 # redux-saga-resources
 
+See also [redux-saga-resources-example](https://github.com/Zaibot/redux-saga-resources-example)
+
 **Module under development**
 
 ## Usage
@@ -9,10 +11,22 @@
 npm install --save redux-saga-resources redux-saga-rest
 ```
 
-**Configuration**
+**Configuration (TypeScript)**
 ```jsx
 import { API, defaultMiddleware } from 'redux-saga-rest';
 import { createResource, createEditor, httpMiddleware } from 'redux-saga-resources';
+
+const api = new API('/api')
+  .use(defaultMiddleware());
+
+export const resource = createResource('post', {}, httpMiddleware('/posts', api));
+export const editor = createEditor('post', {}, resource);
+```
+
+**Configuration (ES6)**
+```jsx
+import { API, defaultMiddleware } from 'redux-saga-rest';
+import { createResource, createEditor, httpMiddleware } from 'redux-saga-resources/es6';
 
 const api = new API('/api')
   .use(defaultMiddleware());

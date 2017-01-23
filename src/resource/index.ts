@@ -57,10 +57,10 @@ interface ICreators {
     doDeleteSuccess(item): any;
     doDeleteFailure(item, reason): any;
 
-    doList(): any;
+    doList(params?: any): any;
     doListCancel(): any;
-    doListSuccess(list): any;
-    doListFailure(reason): any;
+    doListSuccess(list, params: any): any;
+    doListFailure(reason, params: any): any;
 
     doReset(): any;
 }
@@ -71,6 +71,7 @@ interface ISelectors {
     items(state): any[];
     itemById(id): (state) => any;
     itemByItem(item): (state) => any;
+    params(state): any;
 }
 
 interface IFieldSelectors {
