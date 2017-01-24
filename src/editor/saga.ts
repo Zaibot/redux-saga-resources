@@ -4,21 +4,27 @@ import { IEditor } from '.';
 
 function applyMiddlewares(...middlwares) {
   return middlwares.slice(0).reverse().reduce((next, middleware) => {
-    return function*(action) {
-      yield* middleware(action, function*(a = action) {
+    return function* (action) {
+      yield* middleware(action, function* (a = action) {
         yield* next(a);
       });
     };
-  }, function*(action) {
+  }, function* (action) {
     console.error(`Reached end of middleware.`, action)
   });
+}
+
+function stopMiddleware(descriptor: IEditor, options) {
+  return function* (action, next) {
+    // Nothing.
+  };
 }
 
 function defaultMiddleware(descriptor: IEditor, options) {
   const {
     resource
   } = descriptor;
-  return function*(action) {
+  return function* (action, next) {
     if (action.type === descriptor.actions.SELECT) {
       const item = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
       yield put(descriptor.creators.doEdit(item));
@@ -26,7 +32,6 @@ function defaultMiddleware(descriptor: IEditor, options) {
       if (options.createImmediately) {
         yield put(resource.creators.doCreate(yield select(descriptor.selectors.item)));
       } else {
-        // Delayed create.
         yield put(descriptor.creators.doCreateSuccess(yield select(descriptor.selectors.item)));
       }
     } else if (action.type === descriptor.actions.CREATE_FAILURE) {
@@ -35,7 +40,6 @@ function defaultMiddleware(descriptor: IEditor, options) {
       if (options.createImmediately || descriptor.resource.fields.hasCommited(action.payload.item)) {
         yield put(resource.creators.doUpdate(action.payload.item));
       } else {
-        // Delayed create.
         yield put(resource.creators.doCreate(action.payload.item));
       }
     } else if (action.type === descriptor.actions.UPDATE_FAILURE) {
@@ -44,7 +48,17 @@ function defaultMiddleware(descriptor: IEditor, options) {
       yield put(resource.creators.doDelete(action.payload.item));
     } else if (action.type === descriptor.actions.DELETE_FAILURE) {
       yield put(resource.creators.doDeleteFailure(action.payload.item, action.payload.reason));
-    } else if (action.type === resource.actions.CREATE_SUCCESS) {
+    }
+    yield* next(action);
+  };
+}
+
+function resourceIntegrationMiddleware(descriptor: IEditor, options) {
+  const {
+    resource
+  } = descriptor;
+  return function* (action, next) {
+    if (action.type === resource.actions.CREATE_SUCCESS) {
       if (options.createImmediately) {
         const item = action.payload.item;
         const editing = yield select(descriptor.selectors.item);
@@ -52,7 +66,6 @@ function defaultMiddleware(descriptor: IEditor, options) {
           yield put(descriptor.creators.doCreateSuccess(item));
         }
       } else {
-        // Delayed create.
         const item = action.payload.item;
         const editing = yield select(descriptor.selectors.item);
         if (resource.hasSameId(editing, item)) {
@@ -78,6 +91,7 @@ function defaultMiddleware(descriptor: IEditor, options) {
         yield put(descriptor.creators.doDeleteSuccess(item));
       }
     }
+    yield* next(action);
   };
 }
 
@@ -124,7 +138,7 @@ export default function makeSaga(descriptor, options, ...middlewares) {
     resource.actions.DELETE_FAILURE,
     resource.actions.RESET
   ];
-  const f = applyMiddlewares(...middlewares, defaultMiddleware(descriptor, options));
+  const f = applyMiddlewares(...[...middlewares, defaultMiddleware, resourceIntegrationMiddleware, stopMiddleware].map(mw => mw(descriptor, options)));
   return function* internal() {
     yield takeEvery(actions, f);
   }
