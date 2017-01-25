@@ -8,10 +8,13 @@ export default function selectors(name, options, resource) {
         return scope;
     };
     return {
-        opened: (state) => scope(state).opened,
-        loading: (state) => scope(state).loading,
+        creating: (state) => scope(state).creating,
+        reading: (state) => scope(state).reading,
+        updating: (state) => scope(state).updating,
+        deleting: (state) => scope(state).deleting,
         error: (state) => scope(state).error,
         item: (state) => scope(state).item,
+        original: (item) => (state) => resource.selectors.itemByItem(scope(state).item),
         isItem: (item) => (state) => resource.hasSameId(item, scope(state).item)
     }
 }

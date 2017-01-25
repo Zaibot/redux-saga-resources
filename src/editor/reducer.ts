@@ -3,52 +3,54 @@ import { fields, stripFields } from '../resource/fields';
 
 export default function reducer(descriptor, options) {
     const { actions } = descriptor;
-    return (state = { opened: false, loading: false, error: null, item: {} }, action) => {
+    return (state = { creating: false, reading: false, updating: false, deleting: false, error: null, item: {} }, action) => {
         switch (action.type) {
-            case actions.EDIT: {
+            case actions.APPLY: {
                 return { ...state, item: { ...state.item, ...stripFields(action.payload.item || {}) } };
             }
-            case actions.SELECT: {
-                return { ...state, opened: true, loading: false, item: action.payload.item };
-            }
+
             case actions.CREATE: {
-                return { ...state, opened: false, loading: true, item: descriptor.resource.create({ ...action.payload.item }) };
+                return { ...state, creating: true, reading: false, updating: false, deleting: false, item: descriptor.resource.create(action.payload.item) };
             }
-            case actions.CREATE_SUCCESS: {
-                return { ...state, opened: true, loading: false, error: null, item: { ...state.item, ...action.payload.item } };
+            case actions.CREATE_CANCEL: {
+                return { ...state, creating: false, item: {} };
             }
-            case actions.CREATE_FAILURE: {
-                return { ...state, opened: true, loading: false, error: action.payload.reason, item: { ...state.item, ...action.payload.item } };
+            case actions.CREATE_CONTINUE: {
+                return { ...state, creating: false, item: { ...state.item, ...action.payload.item } };
             }
+
             case actions.READ: {
-                return { ...state, opened: true, loading: true, item: {} };
+                return { ...state, creating: false, reading: true, updating: false, deleting: false, item: action.payload.item };
             }
+            case actions.READ_CANCEL: {
+                return { ...state, reading: false, item: {} };
+            }
+            case actions.READ_CONTINUE: {
+                return { ...state, reading: false, item: { ...state.item, ...action.payload.item } };
+            }
+
             case actions.UPDATE: {
-                return { ...state, opened: false, loading: true, item: { ...state.item, ...action.payload.item } };
+                return { ...state, creating: false, reading: false, updating: true, deleting: false, item: action.payload.item };
             }
             case actions.UPDATE_CANCEL: {
-                return { ...state, opened: true, loading: false, item: { ...state.item, ...action.payload.item } };
+                return { ...state, updating: false, item: {} };
             }
-            case actions.UPDATE_SUCCESS: {
-                return { ...state, opened: false, loading: false, error: null, item: {} };
+            case actions.UPDATE_CONTINUE: {
+                return { ...state, updating: false, item: { ...state.item, ...action.payload.item } };
             }
-            case actions.UPDATE_FAILURE: {
-                return { ...state, opened: true, loading: false, error: action.payload.reason, item: action.payload.item };
-            }
+
             case actions.DELETE: {
-                return { ...state, opened: false, loading: true, item: { ...state.item, ...action.payload.item } };
+                return { ...state, creating: false, reading: false, updating: false, deleting: true, item: action.payload.item };
             }
             case actions.DELETE_CANCEL: {
-                return { ...state, loading: false, item: { ...state.item, ...action.payload.item } };
+                return { ...state, deleting: false, item: {} };
             }
-            case actions.DELETE_SUCCESS: {
-                return { ...state, opened: false, loading: false, error: null, item: {} };
+            case actions.DELETE_CONTINUE: {
+                return { ...state, deleting: false, item: { ...state.item, ...action.payload.item } };
             }
-            case actions.DELETE_FAILURE: {
-                return { ...state, loading: true, error: action.payload.reason, item: { ...state.item, ...action.payload.item } };
-            }
+
             case actions.RESET: {
-                return { ...state, opened: false, loading: false, error: null, item: {} };
+                return { ...state, creating: false, reading: false, updating: false, deleting: false, error: null, item: {} };
             }
             default: {
                 return state;

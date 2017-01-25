@@ -2,8 +2,8 @@ import { takeEvery } from 'redux-saga';
 import { call, take, race, put, select } from 'redux-saga/effects';
 import { IEditor } from '.';
 
-function applyMiddlewares(...middlwares) {
-  return middlwares.slice(0).reverse().reduce((next, middleware) => {
+function applyMiddlewares(...middlewares) {
+  return middlewares.slice(0).reverse().reduce((next, middleware) => {
     return function* (action) {
       yield* middleware(action, function* (a = action) {
         yield* next(a);
@@ -14,85 +14,105 @@ function applyMiddlewares(...middlwares) {
   });
 }
 
-function stopMiddleware(descriptor: IEditor, options) {
+function stopMiddleware<T>(descriptor: IEditor<T>, options) {
   return function* (action, next) {
     // Nothing.
   };
 }
 
-function defaultMiddleware(descriptor: IEditor, options) {
-  const {
-    resource
-  } = descriptor;
+function resourceCreateImmediately<T>(descriptor: IEditor<T>, options) {
   return function* (action, next) {
-    if (action.type === descriptor.actions.SELECT) {
-      const item = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
-      yield put(descriptor.creators.doEdit(item));
-    } else if (action.type === descriptor.actions.CREATE) {
-      if (options.createImmediately) {
-        yield put(resource.creators.doCreate(yield select(descriptor.selectors.item)));
-      } else {
-        yield put(descriptor.creators.doCreateSuccess(yield select(descriptor.selectors.item)));
-      }
-    } else if (action.type === descriptor.actions.CREATE_FAILURE) {
-      yield put(resource.creators.doCreateFailure(action.payload.item, action.payload.reason));
-    } else if (action.type === descriptor.actions.UPDATE) {
-      if (options.createImmediately || descriptor.resource.fields.hasCommited(action.payload.item)) {
-        yield put(resource.creators.doUpdate(action.payload.item));
-      } else {
-        yield put(resource.creators.doCreate(action.payload.item));
-      }
-    } else if (action.type === descriptor.actions.UPDATE_FAILURE) {
-      yield put(resource.creators.doUpdateFailure(action.payload.item, action.payload.reason));
-    } else if (action.type === descriptor.actions.DELETE) {
-      yield put(resource.creators.doDelete(action.payload.item));
-    } else if (action.type === descriptor.actions.DELETE_FAILURE) {
-      yield put(resource.creators.doDeleteFailure(action.payload.item, action.payload.reason));
+    if (action.type === descriptor.actions.CREATE) {
+      const item: T = yield select(descriptor.selectors.item);
+      yield put(descriptor.resource.creators.doCreate(item));
     }
     yield* next(action);
-  };
+  }
 }
-
-function resourceIntegrationMiddleware(descriptor: IEditor, options) {
-  const {
-    resource
-  } = descriptor;
+function resourceCreateDelayed<T>(descriptor: IEditor<T>, options) {
   return function* (action, next) {
-    if (action.type === resource.actions.CREATE_SUCCESS) {
-      if (options.createImmediately) {
-        const item = action.payload.item;
-        const editing = yield select(descriptor.selectors.item);
-        if (resource.hasSameId(editing, item)) {
-          yield put(descriptor.creators.doCreateSuccess(item));
-        }
+    if (action.type === descriptor.actions.CREATE) {
+      // Nothing, delegated to update delayed.
+    }
+    yield* next(action);
+  }
+}
+function resourceCreateContinueImmediately<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.CREATE_CONTINUE) {
+      const item: T = yield select(descriptor.selectors.item);
+      yield put(descriptor.resource.creators.doUpdate(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceCreateContinueDelayed<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.CREATE_CONTINUE) {
+      const item: T = yield select(descriptor.selectors.item);
+      yield put(descriptor.resource.creators.doCreate(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceRead<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.READ) {
+      const item: T = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
+      yield put(descriptor.creators.doApply(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceUpdate<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.UPDATE) {
+      const item: T = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
+      yield put(descriptor.creators.doApply(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceUpdateContinueImmediately<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.UPDATE_CONTINUE) {
+      const item: T = yield select(descriptor.selectors.item);
+      yield put(descriptor.resource.creators.doUpdate(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceUpdateContinueDelayed<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.UPDATE_CONTINUE) {
+      const item: T = yield select(descriptor.selectors.item);
+      const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
+      if (descriptor.resource.fields.isRead(storeItem)) {
+        yield put(descriptor.resource.creators.doCreate(item));
       } else {
-        const item = action.payload.item;
-        const editing = yield select(descriptor.selectors.item);
-        if (resource.hasSameId(editing, item)) {
-          yield put(descriptor.creators.doUpdateSuccess(item));
-        }
-      }
-    } else if (action.type === resource.actions.READ_SUCCESS) {
-      const item = action.payload.item;
-      const editing = yield select(descriptor.selectors.item);
-      if (resource.hasSameId(editing, item)) {
-        yield put(descriptor.creators.doReadSuccess(item));
-      }
-    } else if (action.type === resource.actions.UPDATE_SUCCESS) {
-      const item = action.payload.item;
-      const editing = yield select(descriptor.selectors.item);
-      if (resource.hasSameId(editing, item)) {
-        yield put(descriptor.creators.doUpdateSuccess(item));
-      }
-    } else if (action.type === resource.actions.DELETE_SUCCESS) {
-      const item = action.payload.item;
-      const editing = yield select(descriptor.selectors.item);
-      if (resource.hasSameId(editing, item)) {
-        yield put(descriptor.creators.doDeleteSuccess(item));
+        yield put(descriptor.resource.creators.doUpdate(item));
       }
     }
     yield* next(action);
-  };
+  }
+}
+function resourceDelete<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.DELETE) {
+      const item: T = yield select(descriptor.resource.selectors.itemByItem(action.payload.item));
+      yield put(descriptor.creators.doApply(item));
+    }
+    yield* next(action);
+  }
+}
+function resourceDeleteContinue<T>(descriptor: IEditor<T>, options) {
+  return function* (action, next) {
+    if (action.type === descriptor.actions.DELETE_CONTINUE) {
+      const item: T = yield select(descriptor.selectors.item);
+      yield put(descriptor.resource.creators.doDelete(item));
+    }
+    yield* next(action);
+  }
 }
 
 export default function makeSaga(descriptor, options, ...middlewares) {
@@ -100,46 +120,20 @@ export default function makeSaga(descriptor, options, ...middlewares) {
     resource
   } = descriptor;
   const actions = [
-    descriptor.actions.EDIT,
-    descriptor.actions.SELECT,
-    descriptor.actions.CREATE,
-    descriptor.actions.CREATE_CANCEL,
-    descriptor.actions.CREATE_SUCCESS,
-    descriptor.actions.CREATE_FAILURE,
-    descriptor.actions.READ,
-    descriptor.actions.READ_CANCEL,
-    descriptor.actions.READ_SUCCESS,
-    descriptor.actions.READ_FAILURE,
-    descriptor.actions.UPDATE,
-    descriptor.actions.UPDATE_CANCEL,
-    descriptor.actions.UPDATE_SUCCESS,
-    descriptor.actions.UPDATE_FAILURE,
-    descriptor.actions.DELETE,
-    descriptor.actions.DELETE_CANCEL,
-    descriptor.actions.DELETE_SUCCESS,
-    descriptor.actions.DELETE_FAILURE,
-    descriptor.actions.RESET,
-
-    resource.actions.CREATE,
-    resource.actions.CREATE_CANCEL,
-    resource.actions.CREATE_SUCCESS,
-    resource.actions.CREATE_FAILURE,
-    resource.actions.READ,
-    resource.actions.READ_CANCEL,
-    resource.actions.READ_SUCCESS,
-    resource.actions.READ_FAILURE,
-    resource.actions.UPDATE,
-    resource.actions.UPDATE_CANCEL,
-    resource.actions.UPDATE_SUCCESS,
-    resource.actions.UPDATE_FAILURE,
-    resource.actions.DELETE,
-    resource.actions.DELETE_CANCEL,
-    resource.actions.DELETE_SUCCESS,
-    resource.actions.DELETE_FAILURE,
-    resource.actions.RESET
+    ...descriptor.actions.all,
+    ...resource.actions.all
   ];
-  const f = applyMiddlewares(...[...middlewares, defaultMiddleware, resourceIntegrationMiddleware, stopMiddleware].map(mw => mw(descriptor, options)));
-  return function* internal() {
+  const f = applyMiddlewares(...middlewares.concat(
+    options.createImmediately ? resourceCreateImmediately : resourceCreateDelayed,
+    options.createImmediately ? resourceCreateContinueImmediately : resourceCreateContinueDelayed,
+    resourceRead,
+    resourceUpdate,
+    options.createImmediately ? resourceUpdateContinueImmediately : resourceUpdateContinueDelayed,
+    resourceDelete,
+    resourceDeleteContinue,
+    stopMiddleware
+  ).map(mw => mw(descriptor, options)));
+  return function* internal(): any {
     yield takeEvery(actions, f);
   }
 }

@@ -7,7 +7,7 @@ import makeSelectors from './selectors';
 import { fields, selectors as fieldSelectors } from './fields';
 import { makeTempKey, isTempKey } from '../utils/tempKey';
 
-interface IActions {
+export interface IActions {
     CREATE: string;
     CREATE_CANCEL: string;
     CREATE_SUCCESS: string;
@@ -34,9 +34,11 @@ interface IActions {
     LIST_FAILURE: string;
 
     RESET: string;
+
+    all: string[];
 }
 
-interface ICreators {
+export interface ICreators<T> {
     doCreate(item): any;
     doCreateCancel(item): any;
     doCreateSuccess(item): any;
@@ -65,72 +67,75 @@ interface ICreators {
     doReset(): any;
 }
 
-interface ISelectors {
+export interface ISelectors<T> {
     loading(state): boolean;
     error(state): string;
     items(state): any[];
-    itemById(id): (state) => any;
-    itemByItem(item): (state) => any;
+    itemById(id): (state) => T;
+    itemByItem(item: T): (state) => T;
     params(state): any;
 }
 
-interface IFieldSelectors {
-    key(item): string;
-    id(item): string;
-    tempId(item): string;
-    error(item): any;
-    isModified(item): boolean;
-    isReading(item): boolean;
-    isRead(item): boolean;
-    isCreating(item): boolean;
-    isCreated(item): boolean;
-    isRemoving(item): boolean;
-    isRemoved(item): boolean;
-    isUpdating(item): boolean;
-    isUpdated(item): boolean;
-    isUnchanged(item): boolean;
-    isChanging(item): boolean;
-    neverCommited(item): boolean;
-    hasCommited(item): boolean;
+export interface IFieldSelectors<T> {
+    key(item: T): string;
+    id(item: T): string;
+    tempId(item: T): string;
+    error(item: T): any;
+    isModified(item: T): boolean;
+    isReading(item: T): boolean;
+    isRead(item: T): boolean;
+    isCreating(item: T): boolean;
+    isCreated(item: T): boolean;
+    isRemoving(item: T): boolean;
+    isRemoved(item: T): boolean;
+    isUpdating(item: T): boolean;
+    isUpdated(item: T): boolean;
+    isUnchanged(item: T): boolean;
+    isChanging(item: T): boolean;
+    neverCommited(item: T): boolean;
+    hasCommited(item: T): boolean;
 }
-interface IDataSelectors {
-    id(item): any;
+export interface IDataSelectors<T> {
+    id(item: T): any;
 }
 
-interface IResourceOptions {
+export interface IResourceOptions {
     id?: string;
 }
 
-interface IResourceDescriptor {
+export interface IResourceDescriptor<T> {
     name: string;
     options: IResourceOptions;
     actions: IActions;
-    creators: ICreators;
-    selectors: ISelectors;
-    fields: IFieldSelectors;
-    data: IDataSelectors;
-    hasSameId(left, right): boolean;
+    creators: ICreators<T>;
+    selectors: ISelectors<T>;
+    fields: IFieldSelectors<T>;
+    data: IDataSelectors<T>;
+    hasSameId(left: T, right: T): boolean;
 }
-export interface IResource extends IResourceDescriptor {
+export interface IResource<T> extends IResourceDescriptor<T> {
     create(props): any;
     reducer: (state, action) => any;
     saga: () => any;
 }
 
-export interface IMiddlewareFactory {
-    (resource: IResourceDescriptor): IMiddleware;
+export interface IMiddlewareFactory<T> {
+    (resource: IResourceDescriptor<T>): IMiddleware;
 }
 export interface IMiddleware {
     (action, next: (action?) => any);
 }
 
-export function createResource(name: string, options: IResourceOptions, ...middlewares: IMiddlewareFactory[]): IResource {
+export function createResource<T>(name: string, options: IResourceOptions, ...middlewares: IMiddlewareFactory<T>[]): IResource<T> {
+  if (!name) throw new Error(`resource requires a name`)
+  if (!options) throw new Error(`resource requires options`)
+
   options = {
     id: 'id',
     ...options
   }
 
-  const descriptor: IResourceDescriptor = {
+  const descriptor: IResourceDescriptor<T> = {
     name: name,
     data: makeDataSelectors(options),
     options: options,

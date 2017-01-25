@@ -27,6 +27,35 @@ export default function actions(name) {
         LIST_SUCCESS: internal(`LIST_${name.toUpperCase()}_SUCCESS`),
         LIST_FAILURE: internal(`LIST_${name.toUpperCase()}_FAILURE`),
 
-        RESET: internal(`RESET_${name.toUpperCase()}`)
+        RESET: internal(`RESET_${name.toUpperCase()}`),
+
+        all: [
+          internal(`CREATE_${name.toUpperCase()}`),
+          internal(`CREATE_${name.toUpperCase()}_CANCEL`),
+          internal(`CREATE_${name.toUpperCase()}_SUCCESS`),
+          internal(`CREATE_${name.toUpperCase()}_FAILURE`),
+
+          internal(`READ_${name.toUpperCase()}`),
+          internal(`READ_${name.toUpperCase()}_CANCEL`),
+          internal(`READ_${name.toUpperCase()}_SUCCESS`),
+          internal(`READ_${name.toUpperCase()}_FAILURE`),
+
+          internal(`UPDATE_${name.toUpperCase()}`),
+          internal(`UPDATE_${name.toUpperCase()}_CANCEL`),
+          internal(`UPDATE_${name.toUpperCase()}_SUCCESS`),
+          internal(`UPDATE_${name.toUpperCase()}_FAILURE`),
+
+          internal(`DELETE_${name.toUpperCase()}`),
+          internal(`DELETE_${name.toUpperCase()}_CANCEL`),
+          internal(`DELETE_${name.toUpperCase()}_SUCCESS`),
+          internal(`DELETE_${name.toUpperCase()}_FAILURE`),
+
+          internal(`LIST_${name.toUpperCase()}`),
+          internal(`LIST_${name.toUpperCase()}_CANCEL`),
+          internal(`LIST_${name.toUpperCase()}_SUCCESS`),
+          internal(`LIST_${name.toUpperCase()}_FAILURE`),
+
+          internal(`RESET_${name.toUpperCase()}`)
+        ]
     }
 }
