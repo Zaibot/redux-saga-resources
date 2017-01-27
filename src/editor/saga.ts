@@ -69,7 +69,7 @@ function resourceUpdateContinueImmediately<T>(descriptor: IEditor<T>, options) {
 function resourceUpdateContinueDelayed<T>(descriptor: IEditor<T>, options) {
     return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function* (action, item) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
-        if (descriptor.resource.fields.isRead(storeItem)) {
+        if (descriptor.resource.fields.hasCommited(storeItem)) {
             yield put(descriptor.resource.creators.doUpdate(item));
         } else {
             yield put(descriptor.resource.creators.doCreate(item));

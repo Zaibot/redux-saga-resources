@@ -4,7 +4,7 @@ import makeDataSelectors from './dataSelectors';
 import makeReducer from './reducer';
 import makeSaga from './saga';
 import makeSelectors from './selectors';
-import { fields, selectors as fieldSelectors } from './fields';
+import { fields, selectors as fieldSelectors, stripFields } from './fields';
 import { makeTempKey, isTempKey } from '../utils/tempKey';
 
 export interface IActions {
@@ -149,7 +149,8 @@ export function createResource<T>(name: string, options: IResourceOptions, ...mi
   return {
     ...descriptor,
     hasSameId: descriptor.hasSameId,
-    create: (props) => ({ ...props,
+    create: (props) => ({
+      ...stripFields(props),
       [fields.tempId]: makeTempKey()
     }),
     reducer: makeReducer(descriptor),

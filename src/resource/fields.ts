@@ -1,19 +1,34 @@
 import { internal } from '../utils/internal';
 
 export const fields = {
-    id: internal('id'),
-    tempId: internal('tempId'),
-    error: internal('error'),
-    isModified: internal('isModified'),
-    isReading: internal('isReading'),
-    isRead: internal('isRead'),
-    isCreating: internal('isCreating'),
-    isCreated: internal('isCreated'),
-    isRemoving: internal('isRemoving'),
-    isRemoved: internal('isRemoved'),
-    isUpdating: internal('isUpdating'),
-    isUpdated: internal('isUpdated'),
+    id: Symbol(internal('id')),
+    tempId: Symbol(internal('tempId')),
+    error: Symbol(internal('error')),
+    isModified: Symbol(internal('isModified')),
+    isReading: Symbol(internal('isReading')),
+    isRead: Symbol(internal('isRead')),
+    isCreating: Symbol(internal('isCreating')),
+    isCreated: Symbol(internal('isCreated')),
+    isRemoving: Symbol(internal('isRemoving')),
+    isRemoved: Symbol(internal('isRemoved')),
+    isUpdating: Symbol(internal('isUpdating')),
+    isUpdated: Symbol(internal('isUpdated'))
 };
+
+// export const fields = {
+//     id: internal('id'),
+//     tempId: internal('tempId'),
+//     error: internal('error'),
+//     isModified: internal('isModified'),
+//     isReading: internal('isReading'),
+//     isRead: internal('isRead'),
+//     isCreating: internal('isCreating'),
+//     isCreated: internal('isCreated'),
+//     isRemoving: internal('isRemoving'),
+//     isRemoved: internal('isRemoved'),
+//     isUpdating: internal('isUpdating'),
+//     isUpdated: internal('isUpdated')
+// };
 
 export const selectors = {
     key: (item) => item[fields.id]||item[fields.tempId],
@@ -29,6 +44,8 @@ export const selectors = {
     isRemoved: (item) => item[fields.isRemoved],
     isUpdating: (item) => item[fields.isUpdating],
     isUpdated: (item) => item[fields.isUpdated],
+
+    // computed
     isUnchanged: (item) => !item[fields.isReading]&&!item[fields.isCreating]&&!item[fields.isRemoving]&&!item[fields.isUpdating],
     isChanging: (item) => item[fields.isReading]||item[fields.isCreating]||item[fields.isRemoving]||item[fields.isUpdating],
     neverCommited: (item) => !item[fields.isRead]&&!item[fields.isCreated]&&!item[fields.isRemoved]&&!item[fields.isUpdated],
