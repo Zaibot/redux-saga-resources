@@ -9,7 +9,13 @@
   "devDependencies": {
     "assert": "^1.4.1",
     "mocha": "^3.2.0",
-    "typescript": "^2.1.5"
+    "typescript": "^2.1.5",
+    "redux": "^3.6.0",
+    "redux-saga": "^0.14.3"
+  },
+  "peerDependencies": {
+    "redux": "^3.6.0",
+    "redux-saga": "^0.14.3"
   },
   "scripts": {
     "prepublish": "npm run build && npm run test",
@@ -30,9 +36,5 @@
   "bugs": {
     "url": "https://github.com/Zaibot/redux-saga-resources/issues"
   },
-  "homepage": "https://github.com/Zaibot/redux-saga-resources#readme",
-  "peerDependencies": {
-    "redux": "^3.6.0",
-    "redux-saga": "^0.14.3"
-  }
+  "homepage": "https://github.com/Zaibot/redux-saga-resources#readme"
 }
