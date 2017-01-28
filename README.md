@@ -15,6 +15,9 @@ Things you won't have to think about:
 * IDs of new items and syncing them when created.
 * Handling HTTP/REST return codes.
 
+## Examples
+* [Simple CRUD](docs/simplecrud.md)
+* [Simple CRUD using an editor](docs/simplecrudeditor.md)
 
 ## Usage
 
