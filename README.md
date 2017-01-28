@@ -4,6 +4,18 @@ See also [redux-saga-resources-example](https://github.com/Zaibot/redux-saga-res
 
 **Module under development**
 
+## Why
+
+Things you won't have to think about:
+* Retrying.
+* Editing state.
+* Race conditions between actions.
+* Lazy loading.
+* Maintaining consistent state during errors like timeouts.
+* IDs of new items and syncing them when created.
+* Handling HTTP/REST return codes.
+
+
 ## Usage
 
 **Install**

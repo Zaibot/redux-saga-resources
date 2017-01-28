@@ -101,7 +101,7 @@ export default function reducer(descriptor) {
                             ...action.payload.item,
                             [fields.error]: null,
                             [fields.isModified]: true,
-                            [fields.isUpdating]: false
+                            [fields.isUpdating]: true
                         }
                     })
                 };

@@ -58,7 +58,7 @@ function resourceRead<T>(descriptor: IEditor<T>, options) {
 function resourceUpdate<T>(descriptor: IEditor<T>, options) {
     return interceptor(descriptor, descriptor.actions.UPDATE, function* (action, item) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
-        yield put(descriptor.creators.doApply(storeItem));
+        yield put(descriptor.creators.doApply(item));
     });
 }
 function resourceUpdateContinueImmediately<T>(descriptor: IEditor<T>, options) {
@@ -69,7 +69,7 @@ function resourceUpdateContinueImmediately<T>(descriptor: IEditor<T>, options) {
 function resourceUpdateContinueDelayed<T>(descriptor: IEditor<T>, options) {
     return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function* (action, item) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
-        if (descriptor.resource.fields.hasCommited(storeItem)) {
+        if (storeItem && descriptor.resource.fields.hasCommited(storeItem)) {
             yield put(descriptor.resource.creators.doUpdate(item));
         } else {
             yield put(descriptor.resource.creators.doCreate(item));
