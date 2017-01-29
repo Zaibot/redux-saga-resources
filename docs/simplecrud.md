@@ -11,7 +11,7 @@ Simple example of CRUD operators
 ```
 import { createResource, restMiddleware } from 'redux-saga-resources';
 
-export default createResource('items', {}, restMiddleware('/api/items'));
+export default createResource('items', {}, defaultJsonRestMiddleware('/api/items'));
 ```
 
 **store.ts**
@@ -63,7 +63,10 @@ const Item = ({ item, onSave, onDelete }) => (
     <button type="button" onClick={() => onSave({ ...item, counter: item.counter + 1 })}>increase</button>
   </div>
 );
+```
 
+**index.ts**
+```jsx
 const store = configureStore();
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('app'));
 ```

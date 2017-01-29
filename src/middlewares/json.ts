@@ -119,6 +119,7 @@ export function restMiddleware(options) {
         // List
         request.method = 'GET';
         request.url = `${options.url}`;
+        request.params = list;
         yield* next();
         context.ok = [200].includes(response.statusCode);
         context.listed = response.body;
@@ -134,7 +135,6 @@ export function restMiddleware(options) {
         request.method = 'POST';
         request.url = `${options.url}`;
         request.body = create;
-        console.log(request);
         yield* next();
         context.ok = [200,201].includes(response.statusCode);
         context.created = response.body;
@@ -169,7 +169,8 @@ export function* fetchMiddleware({ request, response, withResponse }, next) {
     const result = yield call(() => fetch(url, {
       method: request.method,
       headers: request.headers,
-      credentials: request.credentials
+      credentials: request.credentials,
+      body: request.body
     })) as any;
 
     response.statusText = result.statusText;

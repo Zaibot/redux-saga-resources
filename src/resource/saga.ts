@@ -20,7 +20,7 @@ export default function makeSaga(descriptor, ...middlewares) {
   const f = applyMiddlewares(...middlewares);
   return function* internal(): any {
     yield takeEvery(actions, function* (action) {
-      yield call(f, { action, descriptor })
+      yield fork(() => f({ action, descriptor }));
     });
   }
 }
