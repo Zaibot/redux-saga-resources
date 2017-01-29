@@ -25,19 +25,19 @@ function faker(items) {
         response.headers['content-type'] = 'application/json';
         response.body = JSON.stringify({ id: 1, text: 'Item 1' });
       }
-      if (request.method === 'PUT' && request.url === `/api/fake`) {
+      if (request.method === 'POST' && request.url === `/api/fake`) {
         response.url = request.url;
         response.statusCode = 201;
         response.headers['content-type'] = 'application/json';
         response.body = JSON.stringify({ id: 4, text: 'New' });
       }
-      if (request.method === 'POST' && request.url === `/api/fake/1`) {
+      if (request.method === 'PUT' && request.url === `/api/fake/4`) {
         response.url = request.url;
         response.statusCode = 200;
         response.headers['content-type'] = 'application/json';
         response.body = JSON.stringify({ id: 4, text: 'Updated' });
       }
-      if (request.method === 'DELETE' && request.url === `/api/fake/1`) {
+      if (request.method === 'DELETE' && request.url === `/api/fake/4`) {
         response.url = request.url;
         response.statusCode = 200;
       }
@@ -57,6 +57,7 @@ describe('middlewares', () => {
       it('should fake list', co.wrap(function*() {
         const context = { list: { } };
         yield* middleware(context);
+        assert(context.ok, 'not ok');
         assert.equal(fakeFetch.lastRequest.url, '/api/fake');
         assert.equal(fakeFetch.lastRequest.method, 'GET');
         assert.equal(fakeFetch.lastRequest.body, undefined);
@@ -79,9 +80,10 @@ describe('middlewares', () => {
           create: { text: 'New' }
         };
         yield* middleware(context);
+        assert(context.ok, 'not ok');
         assert.equal(fakeFetch.lastRequest.url, '/api/fake');
-        assert.equal(fakeFetch.lastRequest.method, 'PUT');
-        assert.deepEqual(fakeFetch.lastRequest.body, { text: 'New' });
+        assert.equal(fakeFetch.lastRequest.method, 'POST');
+        assert.deepEqual(fakeFetch.lastRequest.body, JSON.stringify({ text: 'New' }));
         assert.deepEqual(context.created, {
           id: 4, text: 'New'
         });
@@ -99,12 +101,11 @@ describe('middlewares', () => {
             read: { id: 1 }
           };
           yield* middleware(context);
+          assert(context.ok, 'not ok');
           assert.equal(fakeFetch.lastRequest.url, '/api/fake/1');
           assert.equal(fakeFetch.lastRequest.method, 'GET');
-          assert.deepEqual(fakeFetch.lastRequest.body, { id: 1, text: 'Item 1' });
-          assert.deepEqual(context.readed, {
-            id: 4, text: 'New'
-          });
+          assert.equal(fakeFetch.lastRequest.body, undefined);
+          assert.deepEqual(context.readed, { id: 1, text: 'Item 1' });
         }));
       })
         describe('update', () => {
@@ -119,10 +120,11 @@ describe('middlewares', () => {
               update: { id: 4, text: 'Updated' }
             };
             yield* middleware(context);
+            assert(context.ok, 'not ok');
             assert.equal(fakeFetch.lastRequest.url, '/api/fake/4');
-            assert.equal(fakeFetch.lastRequest.method, 'POST');
-            assert.equal(fakeFetch.lastRequest.body, { id: 4, text: 'Updated' });
-            assert.equal(context.updated, { id: 4, text: 'Updated' });
+            assert.equal(fakeFetch.lastRequest.method, 'PUT');
+            assert.equal(fakeFetch.lastRequest.body, JSON.stringify({ id: 4, text: 'Updated' }));
+            assert.deepEqual(context.updated, { id: 4, text: 'Updated' });
           }));
         })
         describe('delete', () => {
@@ -134,10 +136,11 @@ describe('middlewares', () => {
           const middleware = applyMiddlewares(restMiddleware({ id: 'id', url: '/api/fake' }), jsonSerializationMiddleware, fakeFetch.middleware);
           it('should fake delete', co.wrap(function*() {
             const context = {
-              remove: { id: 123, name: 'Test' }
+              remove: { id: 4, name: 'Test' }
             };
             yield* middleware(context);
-            assert.equal(fakeFetch.lastRequest.url, '/api/fake/1');
+            assert(context.ok, 'not ok');
+            assert.equal(fakeFetch.lastRequest.url, '/api/fake/4');
             assert.equal(fakeFetch.lastRequest.method, 'DELETE');
             assert.equal(fakeFetch.lastRequest.body, undefined);
             assert.equal(context.removed, undefined);
