@@ -50,15 +50,11 @@ const App = connect(
     <div>
       <button type="button" onClick={createNewItem}>Add new item</button>
     </div>
-    <List items={items} onSave={updateItem} onDelete={removeItem} />
+    <div>
+      {items.map(item => <Item item={item} onSave={onSave} onDelete={onDelete} />)}
+    </div>
   </div>
 ));
-
-const List = ({ items, onSave, onDelete }) => (
-  <div>
-    {items.map(item => <Item item={item} onSave={onSave} onDelete={onDelete} />)}
-  </div>
-);
 
 const Item = ({ item, onSave, onDelete }) => (
   <div>

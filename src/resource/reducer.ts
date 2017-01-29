@@ -211,7 +211,13 @@ export default function reducer(descriptor) {
             }
             case actions.LIST_SUCCESS: {
                 // LIST - SUCCESS
-                return { ...state, loading: false, error: null, list: action.payload.list, params: action.payload.params };
+                return { ...state, loading: false, error: null, list: action.payload.list.map((item) => {
+                    return {
+                        ...item,
+                        ...action.payload.item,
+                        [fields.isRead]: true
+                    }
+                }), params: action.payload.params };
             }
             case actions.LIST_FAILURE: {
                 // LIST - FAILURE
