@@ -71,3 +71,23 @@ export const stripFields = (obj) => {
     const cleaned = { ...remainder };
     return cleaned;
 };
+
+export const copyFields = (target, src) => {
+    return {
+      ...target,
+      ...{
+        [fields.id]: src[fields.id],
+        [fields.tempId]: src[fields.tempId],
+        [fields.error]: src[fields.error],
+        [fields.isModified]: src[fields.isModified],
+        [fields.isReading]: src[fields.isReading],
+        [fields.isRead]: src[fields.isRead],
+        [fields.isCreating]: src[fields.isCreating],
+        [fields.isCreated]: src[fields.isCreated],
+        [fields.isRemoving]: src[fields.isRemoving],
+        [fields.isRemoved]: src[fields.isRemoved],
+        [fields.isUpdating]: src[fields.isUpdating],
+        [fields.isUpdated]: src[fields.isUpdated],
+      }
+    };
+};

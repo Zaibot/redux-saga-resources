@@ -9,7 +9,7 @@ export default function actions(name) {
         CREATE_CONTINUE: internal(`EDITOR/CREATE_${name.toUpperCase()}_CONTINUE`),
 
         READ: internal(`EDITOR/READ_${name.toUpperCase()}`),
-        READ_CANCEL: internal(`EDIT/READ_${name.toUpperCase()}_CANCEL`),
+        READ_CANCEL: internal(`EDITOR/READ_${name.toUpperCase()}_CANCEL`),
         READ_CONTINUE: internal(`EDITOR/READ_${name.toUpperCase()}_SUCCESS`),
 
         UPDATE: internal(`EDITOR/UPDATE_${name.toUpperCase()}`),
@@ -30,7 +30,7 @@ export default function actions(name) {
           internal(`EDITOR/CREATE_${name.toUpperCase()}_CONTINUE`),
 
           internal(`EDITOR/READ_${name.toUpperCase()}`),
-          internal(`EDIT/READ_${name.toUpperCase()}_CANCEL`),
+          internal(`EDITOR/READ_${name.toUpperCase()}_CANCEL`),
           internal(`EDITOR/READ_${name.toUpperCase()}_SUCCESS`),
 
           internal(`EDITOR/UPDATE_${name.toUpperCase()}`),

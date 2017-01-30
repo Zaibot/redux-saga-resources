@@ -10,6 +10,10 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
+arrayq@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/arrayq/-/arrayq-0.1.1.tgz#c855969049c5f232a202a109d8c2ee5ab0a9993a"
+
 assert@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
@@ -1002,6 +1006,10 @@ readable-stream@^2.0.1:
 redux-saga@^0.14.3:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.14.3.tgz#28cd2c5b49cf780a1de25875765724150c630513"
+
+redux-typescript-actions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/redux-typescript-actions/-/redux-typescript-actions-1.2.0.tgz#0a069482a893d8cf120e8b05a7414bda83a232b3"
 
 redux@^3.6.0:
   version "3.6.0"
