@@ -7,6 +7,8 @@ import makeSelectors from './selectors';
 import { fields, selectors as fieldSelectors, stripFields } from './fields';
 import { makeTempKey, isTempKey } from '../utils/tempKey';
 
+export type Status = false | { time: number };
+
 export interface IActions {
     CREATE: string;
     CREATE_CANCEL: string;
@@ -39,29 +41,29 @@ export interface IActions {
 }
 
 export interface ICreators<T> {
-    doCreate(item): any;
-    doCreateCancel(item): any;
-    doCreateSuccess(item): any;
-    doCreateFailure(item, reason): any;
+    doCreate(item: T): any;
+    doCreateCancel(item: T): any;
+    doCreateSuccess(item: T): any;
+    doCreateFailure(item: T, reason): any;
 
-    doRead(item): any;
-    doReadCancel(item): any;
-    doReadSuccess(item): any;
-    doReadFailure(item, reason): any;
+    doRead(item: T): any;
+    doReadCancel(item: T): any;
+    doReadSuccess(item: T): any;
+    doReadFailure(item: T, reason): any;
 
-    doUpdate(item): any;
-    doUpdateCancel(item): any;
-    doUpdateSuccess(item): any;
-    doUpdateFailure(item, reason): any;
+    doUpdate(item: T): any;
+    doUpdateCancel(item: T): any;
+    doUpdateSuccess(item: T): any;
+    doUpdateFailure(item: T, reason): any;
 
-    doDelete(item): any;
-    doDeleteCancel(item): any;
-    doDeleteSuccess(item): any;
-    doDeleteFailure(item, reason): any;
+    doDelete(item: T): any;
+    doDeleteCancel(item: T): any;
+    doDeleteSuccess(item: T): any;
+    doDeleteFailure(item: T, reason): any;
 
     doList(params?: any): any;
     doListCancel(): any;
-    doListSuccess(list, params: any): any;
+    doListSuccess(list: T[], params: any): any;
     doListFailure(reason, params: any): any;
 
     doReset(): any;
@@ -70,7 +72,7 @@ export interface ICreators<T> {
 export interface ISelectors<T> {
     loading(state): boolean;
     error(state): string;
-    items(state): any[];
+    items(state): T[];
     itemById(id): (state) => T;
     itemByItem(item: T): (state) => T;
     params(state): any;
@@ -81,15 +83,15 @@ export interface IFieldSelectors<T> {
     id(item: T): string;
     tempId(item: T): string;
     error(item: T): any;
-    isModified(item: T): boolean;
-    isReading(item: T): boolean;
-    isRead(item: T): boolean;
-    isCreating(item: T): boolean;
-    isCreated(item: T): boolean;
-    isRemoving(item: T): boolean;
-    isRemoved(item: T): boolean;
-    isUpdating(item: T): boolean;
-    isUpdated(item: T): boolean;
+    isModified(item: T): Status;
+    isReading(item: T): Status;
+    isRead(item: T): Status;
+    isCreating(item: T): Status;
+    isCreated(item: T): Status;
+    isRemoving(item: T): Status;
+    isRemoved(item: T): Status;
+    isUpdating(item: T): Status;
+    isUpdated(item: T): Status;
     isUnchanged(item: T): boolean;
     isChanging(item: T): boolean;
     neverCommited(item: T): boolean;

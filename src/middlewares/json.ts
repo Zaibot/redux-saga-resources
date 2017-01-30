@@ -34,7 +34,6 @@ export function connectMiddleware<T>(descriptor, ...middlewares) {
         yield put(descriptor.creators.doCreateSuccess({
           ...action.payload.item,
           ...context.created,
-          // [fields.isCreated]: true,
           [fields.id]: context.created[descriptor.options.id]
         }));
       } else {
@@ -47,8 +46,7 @@ export function connectMiddleware<T>(descriptor, ...middlewares) {
       if (context.ok) {
         yield put(descriptor.creators.doReadSuccess({
           ...action.payload.item,
-          ...context.readed,
-          // [fields.isRead]: true
+          ...context.readed
         }));
       } else {
         yield put(descriptor.creators.doReadFailure(action.payload.item, context.error));
@@ -60,8 +58,7 @@ export function connectMiddleware<T>(descriptor, ...middlewares) {
       if (context.ok) {
         yield put(descriptor.creators.doUpdateSuccess({
           ...action.payload.item,
-          ...context.updated,
-          // [fields.isUpdated]: true
+          ...context.updated
         }));
       } else {
         yield put(descriptor.creators.doUpdateFailure(action.payload.item, context.error));
@@ -73,8 +70,7 @@ export function connectMiddleware<T>(descriptor, ...middlewares) {
       if (context.ok) {
         yield put(descriptor.creators.doDeleteSuccess({
           ...action.payload.item,
-          ...context.deleted,
-          // [fields.isRemoved]: true
+          ...context.deleted
         }));
       } else {
         yield put(descriptor.creators.doDeleteFailure(action.payload.item, context.error));
@@ -86,8 +82,6 @@ export function connectMiddleware<T>(descriptor, ...middlewares) {
       if (context.ok) {
         yield put(descriptor.creators.doListSuccess(context.listed.map(item => ({
           ...item,
-          ...context.readed,
-          // [fields.isRead]: true,
           [fields.id]: item[descriptor.options.id]
         })), action.payload.params || {}));
       } else {

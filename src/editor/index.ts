@@ -59,7 +59,7 @@ export interface IEditorSelectors<T> {
     deleting(state): boolean;
     error(state): string;
     item(state): T;
-    isItem(item): (state) => boolean;
+    isItem(item: T): (state) => boolean;
 }
 export interface IEditorOptions {
     createImmediately?: boolean;

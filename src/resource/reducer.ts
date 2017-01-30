@@ -37,8 +37,8 @@ export default function reducer(descriptor) {
                             ...item,
                             ...action.payload.item,
                             [fields.error]: null,
-                            [fields.isModified]: true,
-                            [fields.isCreating]: true
+                            [fields.isModified]: { time: Date.now() },
+                            [fields.isCreating]: { time: Date.now() }
                         }
                     })
                 };
@@ -55,7 +55,7 @@ export default function reducer(descriptor) {
                             [fields.error]: null,
                             [fields.isModified]: false,
                             [fields.isCreating]: false,
-                            [fields.isCreated]: true
+                            [fields.isCreated]: { time: Date.now() }
                         }
                     })
                 };
@@ -100,8 +100,8 @@ export default function reducer(descriptor) {
                             ...item,
                             ...action.payload.item,
                             [fields.error]: null,
-                            [fields.isModified]: true,
-                            [fields.isUpdating]: true
+                            [fields.isModified]: { time: Date.now() },
+                            [fields.isUpdating]: { time: Date.now() }
                         }
                     })
                 };
@@ -131,7 +131,7 @@ export default function reducer(descriptor) {
                             [fields.error]: null,
                             [fields.isModified]: false,
                             [fields.isUpdating]: false,
-                            [fields.isUpdated]: true
+                            [fields.isUpdated]: { time: Date.now() }
                         }
                     })
                 };
@@ -159,8 +159,8 @@ export default function reducer(descriptor) {
                         return {
                             ...item,
                             [fields.error]: null,
-                            [fields.isModified]: true,
-                            [fields.isRemoving]: true
+                            [fields.isModified]: { time: Date.now() },
+                            [fields.isRemoving]: { time: Date.now() }
                         }
                     })
                 };
@@ -203,7 +203,7 @@ export default function reducer(descriptor) {
             }
             case actions.LIST: {
                 // LIST
-                return { ...state, loading: true };
+                return { ...state, loading: { time: Date.now() } };
             }
             case actions.LIST_CANCEL: {
                 // LIST - SUCCESS
@@ -214,7 +214,6 @@ export default function reducer(descriptor) {
                 return { ...state, loading: false, error: null, list: action.payload.list.map((item) => {
                     return {
                         ...item,
-                        ...action.payload.item,
                         [fields.isRead]: true
                     }
                 }), params: action.payload.params };
