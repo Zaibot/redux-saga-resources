@@ -18,7 +18,7 @@ export interface IBatchActions<T> {
 
     DELETE: ActionCreator<{ items: T[] }>;
     DELETE_CANCEL: EmptyActionCreator;
-    DELETE_CONTINUE: ActionCreator<{ items: T[], item: T }>;
+    DELETE_CONTINUE: ActionCreator<{ items: T[] }>;
 
     RESET: EmptyActionCreator;
 
@@ -40,7 +40,7 @@ export interface IBatchMerger<T> {
 export interface IBatchOptions<T> {
     createImmediately?: boolean;
     id?: string;
-    merger: IBatchMerger<T>;
+    merger?: IBatchMerger<T>;
 }
 export interface IBatchDescriptor<T> {
     name: string;

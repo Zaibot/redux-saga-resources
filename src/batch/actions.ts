@@ -21,7 +21,7 @@ export default function actions(name) {
 
         DELETE: actionCreator<{ items }>(internal(`BATCH/DELETE_${name.toUpperCase()}`)),
         DELETE_CANCEL: actionCreator(internal(`BATCH/DELETE_${name.toUpperCase()}_CANCEL`)),
-        DELETE_CONTINUE: actionCreator<{ items, item }>(internal(`BATCH/DELETE_${name.toUpperCase()}_CONTINUE`)),
+        DELETE_CONTINUE: actionCreator<{ items }>(internal(`BATCH/DELETE_${name.toUpperCase()}_CONTINUE`)),
 
         RESET: actionCreator(internal(`BATCH/RESET_${name.toUpperCase()}`))
     };
