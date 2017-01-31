@@ -15,7 +15,11 @@
         "suppressImplicitAnyIndexErrors": true,
         "sourceMap": true,
         "outDir": "es6",
-				"lib": ["es2016", "dom"]
+        "lib": [
+          "es5",
+          "es6",
+          "dom"
+				]
 	},
   "compileOnSave": false,
   "buildOnSave": false,
