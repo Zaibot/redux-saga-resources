@@ -10,9 +10,9 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
-arrayq@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/arrayq/-/arrayq-0.1.1.tgz#c855969049c5f232a202a109d8c2ee5ab0a9993a"
+arrayq@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/arrayq/-/arrayq-0.1.5.tgz#0742765bf05dbabf33c5676c898f7cdd14db7b4d"
 
 assert@^1.4.1:
   version "1.4.1"
