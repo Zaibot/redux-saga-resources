@@ -1,6 +1,6 @@
 import * as fetch from 'isomorphic-fetch';
 import { call, select, put } from 'redux-saga/effects';
-import applyMiddlewares from '../utils/applyMiddlewares';
+import applyMiddlewares, { Middleware } from '../utils/applyMiddlewares';
 
 
 export function authBearerMiddleware(selector) {
@@ -13,7 +13,18 @@ export function authBearerMiddleware(selector) {
   }
 }
 
-export function defaultJsonRestMiddleware<T>(url, ...middlewares) {
+export interface IJsonResetParams {
+  list?;
+  create?;
+  read?;
+  update?;
+  remove?;
+  request?: { method; url; params; headers; body; };
+  response?: { url; headers; statusCode; statusText; body; };
+  ok?: boolean;
+}
+
+export function defaultJsonRestMiddleware<T>(url, ...middlewares: Middleware<IJsonResetParams>[]) {
   return (descriptor) => {
     return connectMiddleware(descriptor, restMiddleware({ id: descriptor.options.id, url: url }), ...middlewares, jsonSerializationMiddleware, fetchMiddleware);
   };
@@ -120,9 +131,9 @@ const getStatusOk = (...codes) => (code) => codes.indexOf(code) > -1;
 export function restMiddleware(options) {
   const isListOk = getStatusOk(200);
   const isReadOk = getStatusOk(200);
-  const isCreateOk = getStatusOk(200, 201);
-  const isUpdateOk = getStatusOk(200);
-  const isDeleteOk = getStatusOk(200, 404);
+  const isCreateOk = getStatusOk(200, 201, 204);
+  const isUpdateOk = getStatusOk(200, 204);
+  const isDeleteOk = getStatusOk(200, 204, 404);
 
   return function* internal(context, next) {
     const request = context.request = {
@@ -185,8 +196,6 @@ export function restMiddleware(options) {
   }
 }
 export function* fetchMiddleware({ request, response, withResponse }, next) {
-  yield* next();
-
   const paramKeys = Object.keys(request.params);
   const params = paramKeys.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
   const baseUrl = request.url;
@@ -203,7 +212,13 @@ export function* fetchMiddleware({ request, response, withResponse }, next) {
   response.statusCode = result.status;
   response.url = result.url;
   response.headers = result.headers;
-  response.body = yield call(() => result.json());
+  try {
+    response.body = yield call(() => result.json());
+  } catch(ex) {
+    response.bodyError = ex;
+  }
+
+  yield* next();
 }
 
 export function* jsonSerializationMiddleware({ request, response }, next) {
@@ -216,9 +231,13 @@ export function* jsonSerializationMiddleware({ request, response }, next) {
 
   yield* next();
 
-  if (/^application\/json/.test(response.headers['content-type'])) {
-    if (typeof response.body !== 'object') {
-      response.body = JSON.parse(response.body);
+  if (response.statusCode === 204) {
+
+  } else {
+    if (/^application\/json/.test(response.headers['content-type'])) {
+      if (typeof response.body !== 'object' && response.body !== undefined) {
+        response.body = JSON.parse(response.body);
+      }
     }
   }
 }
