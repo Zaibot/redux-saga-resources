@@ -10,122 +10,122 @@ import { makeTempKey, isTempKey } from '../utils/tempKey';
 export type Status = false | { time: number };
 
 export interface IActions {
-    CREATE: string;
-    CREATE_CANCEL: string;
-    CREATE_SUCCESS: string;
-    CREATE_FAILURE: string;
+  CREATE: string;
+  CREATE_CANCEL: string;
+  CREATE_SUCCESS: string;
+  CREATE_FAILURE: string;
 
-    READ: string;
-    READ_CANCEL: string;
-    READ_SUCCESS: string;
-    READ_FAILURE: string;
+  READ: string;
+  READ_CANCEL: string;
+  READ_SUCCESS: string;
+  READ_FAILURE: string;
 
-    UPDATE: string;
-    UPDATE_CANCEL: string;
-    UPDATE_SUCCESS: string;
-    UPDATE_FAILURE: string;
+  UPDATE: string;
+  UPDATE_CANCEL: string;
+  UPDATE_SUCCESS: string;
+  UPDATE_FAILURE: string;
 
-    DELETE: string;
-    DELETE_CANCEL: string;
-    DELETE_SUCCESS: string;
-    DELETE_FAILURE: string;
+  DELETE: string;
+  DELETE_CANCEL: string;
+  DELETE_SUCCESS: string;
+  DELETE_FAILURE: string;
 
-    LIST: string;
-    LIST_CANCEL: string;
-    LIST_SUCCESS: string;
-    LIST_FAILURE: string;
+  LIST: string;
+  LIST_CANCEL: string;
+  LIST_SUCCESS: string;
+  LIST_FAILURE: string;
 
-    RESET: string;
+  RESET: string;
 
-    all: string[];
+  all: string[];
 }
 
 export interface ICreators<T> {
-    doCreate(item: T): any;
-    doCreateCancel(item: T): any;
-    doCreateSuccess(item: T): any;
-    doCreateFailure(item: T, reason): any;
+  doCreate(item: T): any;
+  doCreateCancel(item: T): any;
+  doCreateSuccess(item: T): any;
+  doCreateFailure(item: T, reason): any;
 
-    doRead(item: T): any;
-    doReadCancel(item: T): any;
-    doReadSuccess(item: T): any;
-    doReadFailure(item: T, reason): any;
+  doRead(item: T): any;
+  doReadCancel(item: T): any;
+  doReadSuccess(item: T): any;
+  doReadFailure(item: T, reason): any;
 
-    doUpdate(item: T): any;
-    doUpdateCancel(item: T): any;
-    doUpdateSuccess(item: T): any;
-    doUpdateFailure(item: T, reason): any;
+  doUpdate(item: T): any;
+  doUpdateCancel(item: T): any;
+  doUpdateSuccess(item: T): any;
+  doUpdateFailure(item: T, reason): any;
 
-    doDelete(item: T): any;
-    doDeleteCancel(item: T): any;
-    doDeleteSuccess(item: T): any;
-    doDeleteFailure(item: T, reason): any;
+  doDelete(item: T): any;
+  doDeleteCancel(item: T): any;
+  doDeleteSuccess(item: T): any;
+  doDeleteFailure(item: T, reason): any;
 
-    doList(params?: any): any;
-    doListCancel(): any;
-    doListSuccess(list: T[], params: any): any;
-    doListFailure(reason, params: any): any;
+  doList(params?: any): any;
+  doListCancel(): any;
+  doListSuccess(list: T[], params: any): any;
+  doListFailure(reason, params: any): any;
 
-    doReset(): any;
+  doReset(): any;
 }
 
 export interface ISelectors<T> {
-    loading(state): boolean;
-    error(state): string;
-    items(state): T[];
-    itemById(id): (state) => T;
-    itemByItem(item: T): (state) => T;
-    params(state): any;
+  loading(state): boolean;
+  error(state): string;
+  items(state): T[];
+  itemById(id): (state) => T;
+  itemByItem(item: T): (state) => T;
+  params(state): any;
 }
 
 export interface IFieldSelectors<T> {
-    key(item: T): string;
-    id(item: T): string;
-    tempId(item: T): string;
-    error(item: T): any;
-    isModified(item: T): Status;
-    isReading(item: T): Status;
-    isRead(item: T): Status;
-    isCreating(item: T): Status;
-    isCreated(item: T): Status;
-    isRemoving(item: T): Status;
-    isRemoved(item: T): Status;
-    isUpdating(item: T): Status;
-    isUpdated(item: T): Status;
-    isUnchanged(item: T): boolean;
-    isChanging(item: T): boolean;
-    neverCommited(item: T): boolean;
-    hasCommited(item: T): boolean;
+  key(item: T): string;
+  id(item: T): string;
+  tempId(item: T): string;
+  error(item: T): any;
+  isModified(item: T): Status;
+  isReading(item: T): Status;
+  isRead(item: T): Status;
+  isCreating(item: T): Status;
+  isCreated(item: T): Status;
+  isRemoving(item: T): Status;
+  isRemoved(item: T): Status;
+  isUpdating(item: T): Status;
+  isUpdated(item: T): Status;
+  isUnchanged(item: T): boolean;
+  isChanging(item: T): boolean;
+  neverCommited(item: T): boolean;
+  hasCommited(item: T): boolean;
 }
 export interface IDataSelectors<T> {
-    id(item: T): any;
+  id(item: T): any;
 }
 
 export interface IResourceOptions {
-    id?: string;
+  id?: string;
 }
 
 export interface IResourceDescriptor<T> {
-    name: string;
-    options: IResourceOptions;
-    actions: IActions;
-    creators: ICreators<T>;
-    selectors: ISelectors<T>;
-    fields: IFieldSelectors<T>;
-    data: IDataSelectors<T>;
-    hasSameId(left: T, right: T): boolean;
+  name: string;
+  options: IResourceOptions;
+  actions: IActions;
+  creators: ICreators<T>;
+  selectors: ISelectors<T>;
+  fields: IFieldSelectors<T>;
+  data: IDataSelectors<T>;
+  hasSameId(left: T, right: T): boolean;
 }
 export interface IResource<T> extends IResourceDescriptor<T> {
-    create(props): any;
-    reducer: (state, action) => any;
-    saga: () => any;
+  create(props): any;
+  reducer: (state, action) => any;
+  saga: () => any;
 }
 
 export interface IMiddlewareFactory<T> {
-    (resource: IResourceDescriptor<T>): IMiddleware;
+  (resource: IResourceDescriptor<T>): IMiddleware;
 }
 export interface IMiddleware {
-    (action, next: (action?) => any);
+  (action, next: (action?) => any);
 }
 
 export function createResource<T>(name: string, options: IResourceOptions, ...middlewares: IMiddlewareFactory<T>[]): IResource<T> {

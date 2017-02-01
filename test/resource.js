@@ -16,7 +16,7 @@ describe('resource', () => {
     })
   })
   describe('instance', () => {
-    const resource = createResource('test', {});    
+    const resource = createResource('test', {});
     it('should have a name', () => {
       assert(resource.name);
     })

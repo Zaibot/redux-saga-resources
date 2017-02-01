@@ -6,7 +6,7 @@ const requireId = (item) => {
   if (!item) {
     throw new Error(`Expecting item.`);
   }
-  const { [fields.id]: id } = item;
+  const {[fields.id]: id } = item;
   if (!id) {
     throw new Error(`Expecting id to be filled, use resource.create({ ... }) to create a new instance.`);
   }
@@ -16,7 +16,7 @@ const requireTempId = (item) => {
   if (!item) {
     throw new Error(`Expecting item.`);
   }
-  const { [fields.tempId]: tempId } = item;
+  const {[fields.tempId]: tempId } = item;
   if (!tempId) {
     throw new Error(`Expecting tempId to be filled, use resource.create({ ... }) to create a new instance.`);
   }
@@ -24,212 +24,212 @@ const requireTempId = (item) => {
 };
 
 export default function reducer(descriptor) {
-    const { actions } = descriptor;
-    return (state = { loading: false, error: null, list: [] }, action) => {
-        switch (action.type) {
-            case actions.CREATE: {
-                // CREATE
-                const internalId = requireTempId(action.payload.item);
-                return {
+  const { actions } = descriptor;
+  return (state = { loading: false, error: null, list: [] }, action) => {
+    switch (action.type) {
+      case actions.CREATE: {
+        // CREATE
+        const internalId = requireTempId(action.payload.item);
+        return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+          list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+            return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: null,
-                            [fields.isModified]: { time: Date.now() },
-                            [fields.isCreating]: { time: Date.now() }
+            ...action.payload.item,
+            [fields.error]: null,
+            [fields.isModified]: { time: Date.now() },
+            [fields.isCreating]: { time: Date.now() }
                         }
-                    })
-                };
-            }
+      })
+    };
+  }
             case actions.CREATE_SUCCESS: {
-                // CREATE - SUCCESS
-                const internalId = requireTempId(action.payload.item);
-                return {
+    // CREATE - SUCCESS
+    const internalId = requireTempId(action.payload.item);
+    return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+      list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+        return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: null,
-                            [fields.isModified]: false,
-                            [fields.isCreating]: false,
-                            [fields.isCreated]: { time: Date.now() }
+        ...action.payload.item,
+        [fields.error]: null,
+        [fields.isModified]: false,
+        [fields.isCreating]: false,
+        [fields.isCreated]: { time: Date.now() }
                         }
-                    })
-                };
+  })
+};
             }
             case actions.CREATE_FAILURE: {
-                // CREATE - SUCCESS
-                const internalId = requireTempId(action.payload.item);
-                return {
+  // CREATE - SUCCESS
+  const internalId = requireTempId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: action.payload.reason,
-                            [fields.isCreating]: false
+      ...action.payload.item,
+      [fields.error]: action.payload.reason,
+      [fields.isCreating]: false
                         }
-                    })
+})
                 };
             }
             case actions.READ: {
-                // READ
-                const internalId = requireId(action.payload.item);
-                return {
+  // READ
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: null,
-                            [fields.isReading]: false
+      ...action.payload.item,
+      [fields.error]: null,
+      [fields.isReading]: false
                         }
-                    })
+})
                 };
             }
             case actions.UPDATE: {
-                // UPDATE
-                const internalId = requireId(action.payload.item);
-                return {
+  // UPDATE
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: null,
-                            [fields.isModified]: { time: Date.now() },
-                            [fields.isUpdating]: { time: Date.now() }
+      ...action.payload.item,
+      [fields.error]: null,
+      [fields.isModified]: { time: Date.now() },
+      [fields.isUpdating]: { time: Date.now() }
                         }
-                    })
+})
                 };
             }
             case actions.UPDATE_CANCEL: {
-                // UPDATE - CANCEL
-                const internalId = requireId(action.payload.item);
-                return {
+  // UPDATE - CANCEL
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
-                            [fields.error]: null,
-                            [fields.isUpdating]: false
-                        }
-                    })
-                };
-            }
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
+        [fields.error]: null,
+        [fields.isUpdating]: false
+      }
+    })
+  };
+}
             case actions.UPDATE_SUCCESS: {
-                // UPDATE - SUCCESS
-                const internalId = requireId(action.payload.item);
-                return {
+  // UPDATE - SUCCESS
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            ...action.payload.item,
-                            [fields.error]: null,
-                            [fields.isModified]: false,
-                            [fields.isUpdating]: false,
-                            [fields.isUpdated]: { time: Date.now() }
+      ...action.payload.item,
+      [fields.error]: null,
+      [fields.isModified]: false,
+      [fields.isUpdating]: false,
+      [fields.isUpdated]: { time: Date.now() }
                         }
-                    })
+})
                 };
             }
             case actions.UPDATE_FAILURE: {
-                // UPDATE - FAILURE
-                const internalId = requireId(action.payload.item);
-                return {
+  // UPDATE - FAILURE
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            [fields.error]: action.payload.reason,
-                            [fields.isUpdating]: false
+      [fields.error]: action.payload.reason,
+      [fields.isUpdating]: false
                         }
-                    })
+})
                 };
             }
             case actions.DELETE: {
-                // DELETE
-                const internalId = requireId(action.payload.item);
-                return {
+  // DELETE
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            [fields.error]: null,
-                            [fields.isModified]: { time: Date.now() },
-                            [fields.isRemoving]: { time: Date.now() }
+      [fields.error]: null,
+      [fields.isModified]: { time: Date.now() },
+      [fields.isRemoving]: { time: Date.now() }
                         }
-                    })
+})
                 };
             }
             case actions.DELETE_CANCEL: {
-                // DELETE - CANCEL
-                const internalId = requireId(action.payload.item);
-                return {
+  // DELETE - CANCEL
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            [fields.error]: null,
-                            [fields.isRemoving]: false
+      [fields.error]: null,
+      [fields.isRemoving]: false
                         }
-                    })
+})
                 };
             }
             case actions.DELETE_SUCCESS: {
-                // DELETE - SUCCESS
-                const internalId = requireId(action.payload.item);
-                return {
+  // DELETE - SUCCESS
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listRemove(descriptor, state.list, action.payload.item)
-                };
-            }
+    list: listRemove(descriptor, state.list, action.payload.item)
+  };
+}
             case actions.DELETE_FAILURE: {
-                // DELETE - FAILURE
-                const internalId = requireId(action.payload.item);
-                return {
+  // DELETE - FAILURE
+  const internalId = requireId(action.payload.item);
+  return {
                     ...state,
-                    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
-                        return {
+    list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item) => {
+      return {
                             ...item,
-                            [fields.error]: action.payload.reason,
-                            [fields.isRemoving]: false
+      [fields.error]: action.payload.reason,
+      [fields.isRemoving]: false
                         }
-                    })
+})
                 };
             }
             case actions.LIST: {
-                // LIST
-                return { ...state, loading: { time: Date.now() } };
-            }
+  // LIST
+  return { ...state, loading: { time: Date.now() } };
+}
             case actions.LIST_CANCEL: {
-                // LIST - SUCCESS
-                return { ...state, loading: false, error: null };
-            }
+  // LIST - SUCCESS
+  return { ...state, loading: false, error: null };
+}
             case actions.LIST_SUCCESS: {
-                // LIST - SUCCESS
-                return { ...state, loading: false, error: null, list: action.payload.list.map((item) => {
-                    return {
+  // LIST - SUCCESS
+  return { ...state, loading: false, error: null, list: action.payload.list.map((item) => {
+    return {
                         ...item,
-                        [fields.isRead]: true
+    [fields.isRead]: true
                     }
-                }), params: action.payload.params };
+}), params: action.payload.params };
             }
             case actions.LIST_FAILURE: {
-                // LIST - FAILURE
-                return { ...state, loading: false, error: action.payload.reason };
-            }
+  // LIST - FAILURE
+  return { ...state, loading: false, error: action.payload.reason };
+}
             case actions.RESET: {
-                // RESET
-                return { ...state, loading: false, error: null, list: [], params: {} };
-            }
+  // RESET
+  return { ...state, loading: false, error: null, list: [], params: {} };
+}
             default: {
-                // Nothing.
-                return state;
-            }
+  // Nothing.
+  return state;
+}
         }
     };
 }

@@ -3,12 +3,12 @@ import { call, fork } from 'redux-saga/effects';
 
 function applyMiddlewares(...middlwares) {
   return middlwares.slice(0).reverse().reduce((next, middleware) => {
-    return function*(action) {
+    return function* (action) {
       yield* middleware(action, function* (a = action) {
         yield* next(a);
       });
     };
-  }, function*(action) {
+  }, function* (action) {
     console.debug(`Reached end of middleware.`, action)
   });
 }

@@ -7,75 +7,75 @@ import makeEditorReducer from './reducer';
 import makeEditorSaga from './saga';
 
 export interface IEditorActions {
-    APPLY: string;
+  APPLY: string;
 
-    CREATE: string;
-    CREATE_CANCEL: string;
-    CREATE_CONTINUE: string;
+  CREATE: string;
+  CREATE_CANCEL: string;
+  CREATE_CONTINUE: string;
 
-    READ: string;
-    READ_CANCEL: string;
-    READ_CONTINUE: string;
+  READ: string;
+  READ_CANCEL: string;
+  READ_CONTINUE: string;
 
-    UPDATE: string;
-    UPDATE_CANCEL: string;
-    UPDATE_CONTINUE: string;
+  UPDATE: string;
+  UPDATE_CANCEL: string;
+  UPDATE_CONTINUE: string;
 
-    DELETE: string;
-    DELETE_CANCEL: string;
-    DELETE_CONTINUE: string;
+  DELETE: string;
+  DELETE_CANCEL: string;
+  DELETE_CONTINUE: string;
 
-    RESET: string;
+  RESET: string;
 
-    all: string[];
+  all: string[];
 }
 
 export interface IEditorCreators<T> {
-    doApply(item: T | any): any;
+  doApply(item: T | any): any;
 
-    doCreate(item: T | any): any;
-    doCreateCancel(): any;
-    doCreateContinue(item: T): any;
+  doCreate(item: T | any): any;
+  doCreateCancel(): any;
+  doCreateContinue(item: T): any;
 
-    doRead(item: T): any;
-    doReadCancel(): any;
-    doReadContinue(item: T): any;
+  doRead(item: T): any;
+  doReadCancel(): any;
+  doReadContinue(item: T): any;
 
-    doUpdate(item: T): any;
-    doUpdateCancel(): any;
-    doUpdateContinue(item: T): any;
+  doUpdate(item: T): any;
+  doUpdateCancel(): any;
+  doUpdateContinue(item: T): any;
 
-    doDelete(item: T): any;
-    doDeleteCancel(): any;
-    doDeleteContinue(item: T): any;
+  doDelete(item: T): any;
+  doDeleteCancel(): any;
+  doDeleteContinue(item: T): any;
 
-    doReset(): any;
+  doReset(): any;
 }
 
 export interface IEditorSelectors<T> {
-    creating(state): boolean;
-    reading(state): boolean;
-    updating(state): boolean;
-    deleting(state): boolean;
-    error(state): string;
-    item(state): T;
-    isItem(item: T): (state) => boolean;
+  creating(state): boolean;
+  reading(state): boolean;
+  updating(state): boolean;
+  deleting(state): boolean;
+  error(state): string;
+  item(state): T;
+  isItem(item: T): (state) => boolean;
 }
 export interface IEditorOptions {
-    createImmediately?: boolean;
-    id?: string;
+  createImmediately?: boolean;
+  id?: string;
 }
 export interface IEditorDescriptor<T> {
-    name: string;
-    options: IEditorOptions;
-    resource: IResource<T>;
-    actions: IEditorActions;
-    creators: IEditorCreators<T>;
-    selectors: IEditorSelectors<T>;
+  name: string;
+  options: IEditorOptions;
+  resource: IResource<T>;
+  actions: IEditorActions;
+  creators: IEditorCreators<T>;
+  selectors: IEditorSelectors<T>;
 }
 export interface IEditor<T> extends IEditorDescriptor<T> {
-    reducer: (state, action) => any;
-    saga: () => any;
+  reducer: (state, action) => any;
+  saga: () => any;
 }
 
 export function createEditor<T>(name: string, options: IEditorOptions, resource: IResource<T>, ...middlewares): IEditor<T> {
