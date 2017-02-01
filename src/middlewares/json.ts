@@ -182,11 +182,10 @@ export function* fetchMiddleware({ request, response, withResponse }, next) {
 }
 
 export function* jsonSerializationMiddleware({ request, response }, next) {
+  request.headers['accept'] = 'application/json';
+
     if (request.body) {
-        request.headers = {
-            'accept': 'application/json',
-            'content-type': 'application/json'
-        }
+        request.headers['content-type'] = 'application/json'
         request.body = JSON.stringify(request.body);
     }
 
