@@ -195,18 +195,28 @@ export function restMiddleware(options) {
     }
   }
 }
+function* safeFetch(url, options) {
+  try {
+      return yield call(() => fetch(url, options)) as any;
+  } catch(ex) {
+    return {
+      statusText: 'error',
+      statusCode: 0
+    };
+  }
+}
 export function* fetchMiddleware({ request, response, withResponse }, next) {
   const paramKeys = Object.keys(request.params);
   const params = paramKeys.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
   const baseUrl = request.url;
   const url = params ? `${baseUrl}?${params}` : baseUrl;
 
-  const result = yield call(() => fetch(url, {
+  const result = yield safeFetch(url, {
     method: request.method,
     headers: request.headers,
     credentials: request.credentials,
     body: request.body
-  })) as any;
+  }) as any;
 
   response.statusText = result.statusText;
   response.statusCode = result.status;
