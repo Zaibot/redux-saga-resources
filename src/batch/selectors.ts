@@ -12,7 +12,7 @@ export default function selectors<T>(name, options, resource) {
     reading: (state) => scope(state).reading,
     updating: (state) => scope(state).updating,
     deleting: (state) => scope(state).deleting,
-    sourceItems: (state): T => scope(state).items,
+    sourceItems: (state): T[] => scope(state).items,
     item: (state): T => scope(state).item
   }
 }
