@@ -31,7 +31,7 @@ export interface IBatchSelectors<T> {
   updating(state): boolean;
   deleting(state): boolean;
   item(state): T;
-  sourceItems(state): T;
+  sourceItems(state): T[];
 }
 export interface IBatchMerger<T> {
   combine(items: T[]): T;
