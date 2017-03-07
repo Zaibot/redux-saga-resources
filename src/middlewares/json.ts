@@ -1,4 +1,8 @@
-import * as fetch from 'isomorphic-fetch';
+/* tslint:disable */
+/// <reference path="./isomorphic-fetch.d.ts" />
+/* tslint:enable */
+
+import fetch from 'isomorphic-fetch';
 import { call, put, select } from 'redux-saga/effects';
 import { IResourceDescriptor, IResourceOptions } from '../resource';
 import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
