@@ -32,7 +32,7 @@
     "clean": "rimraf es6/* && rimraf node/*",
     "compile": "npm run compile:ts && npm run compile:node",
     "compile:ts": "tsc -p tsconfig.json",
-    "compile:node": "babel es6 --out-dir node",
+    "compile:node": "babel es6 --out-dir node --presets node",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "lint:fix": "tslint -c tslint.json src/**/*.ts --fix",
     "test": "mocha test",
