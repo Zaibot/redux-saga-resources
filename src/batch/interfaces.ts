@@ -1,5 +1,7 @@
-import actionCreatorFactory, { EmptyActionCreator, ActionCreator } from 'redux-typescript-actions';
+import { Action } from 'redux';
+import actionCreatorFactory, { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
 import { IResource } from '../resource';
+import { IMiddleware } from '../utils/applyMiddlewares';
 
 export interface IBatchActions<T> {
   APPLY: ActionCreator<{ item: T }>;
@@ -22,16 +24,16 @@ export interface IBatchActions<T> {
 
   RESET: EmptyActionCreator;
 
-  all: ActionCreator<any>[];
+  all: Array<ActionCreator<any>>;
 }
 
 export interface IBatchSelectors<T> {
-  creating(state): boolean;
-  reading(state): boolean;
-  updating(state): boolean;
-  deleting(state): boolean;
-  item(state): T;
-  sourceItems(state): T[];
+  creating(state: any): boolean;
+  reading(state: any): boolean;
+  updating(state: any): boolean;
+  deleting(state: any): boolean;
+  item(state: any): T;
+  sourceItems(state: any): T[];
 }
 export interface IBatchMerger<T> {
   combine(items: T[]): T;
@@ -51,6 +53,10 @@ export interface IBatchDescriptor<T> {
   selectors: IBatchSelectors<T>;
 }
 export interface IBatch<T> extends IBatchDescriptor<T> {
-  reducer: (state, action) => any;
+  reducer: (state: any, action: Action) => any;
   saga: () => any;
+}
+
+export interface ISagaMiddlewareFactory<T> {
+  (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>): IMiddleware<Action>;
 }

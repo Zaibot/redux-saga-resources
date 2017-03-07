@@ -1,21 +1,24 @@
-export interface Middleware<T extends Object> {
-  (param: T, next: (param: T) => IterableIterator<any>): IterableIterator<any>;
+export interface IMiddlewareNext<T extends Object> {
+  (param: T): IterableIterator<any>;
+}
+export interface IMiddleware<T extends Object> {
+  (param: T, next: IMiddlewareNext<T>): IterableIterator<any>;
 }
 
-
-export default function applyMiddlewares<T extends Object>(...middlewares: Middleware<T>[]): Middleware<T> {
-  const compiled = middlewares.reduceRight((next: (param: T, last: Middleware<T>) => IterableIterator<any>, current: Middleware<T>) => {
+export default function applyMiddlewares<T extends Object>(...middlewares: Array<IMiddleware<T>>): IMiddleware<T> {
+  const compiled = middlewares.reduceRight((next: (param: T, last: IMiddleware<T>) => IterableIterator<any>, current: IMiddleware<T>) => {
      return function* (param, last) {
        yield* current(param, function* (additional) {
          yield* next(param, last);
        });
      };
-   }, function* (param: T, last: Middleware<T> = noop) {
+   }, function* (param: T, last: IMiddleware<T> = noop) {
      yield* last(param, noop as any /*???*/);
    });
 
   return compiled;
 }
 
-function* noop<T>(param: T, next: (param: T) => IterableIterator<any>) {
+function* noop<T>(param: T, next: (param: T) => IterableIterator<any>): IterableIterator<any> {
+  // Nothing
 }

@@ -1,10 +1,17 @@
+import { Action } from 'redux';
+
 import { IResource } from '../resource';
+import { IMiddleware } from '../utils/applyMiddlewares';
 
 import makeEditorActions from './actions';
 import makeEditorCreators from './creators';
-import makeEditorSelectors from './selectors';
 import makeEditorReducer from './reducer';
 import makeEditorSaga from './saga';
+import makeEditorSelectors from './selectors';
+
+export interface IActionMiddlewareFactory<T> {
+  (descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action>;
+}
 
 export interface IEditorActions {
   APPLY: string;
@@ -53,13 +60,14 @@ export interface IEditorCreators<T> {
 }
 
 export interface IEditorSelectors<T> {
-  creating(state): boolean;
-  reading(state): boolean;
-  updating(state): boolean;
-  deleting(state): boolean;
-  error(state): string;
-  item(state): T;
-  isItem(item: T): (state) => boolean;
+  creating(state: any): boolean;
+  reading(state: any): boolean;
+  updating(state: any): boolean;
+  deleting(state: any): boolean;
+  error(state: any): string;
+  item(state: any): T;
+  original(item: T): (state: any) => T;
+  isItem(item: T): (state: any) => boolean;
 }
 export interface IEditorOptions {
   createImmediately?: boolean;
@@ -74,25 +82,31 @@ export interface IEditorDescriptor<T> {
   selectors: IEditorSelectors<T>;
 }
 export interface IEditor<T> extends IEditorDescriptor<T> {
-  reducer: (state, action) => any;
+  reducer: (state: any, action: Action) => any;
   saga: () => any;
 }
 
-export function createEditor<T>(name: string, options: IEditorOptions, resource: IResource<T>, ...middlewares): IEditor<T> {
-  if (!name) throw new Error(`editor requires a name`)
-  if (!options) throw new Error(`editor requires options`)
-  if (!resource) throw new Error(`editor requires resource`)
-
-  options = {
-    id: 'id',
-    createImmediately: true,
-    ...options
+export function createEditor<T>(name: string, options: IEditorOptions, resource: IResource<T>, ...middlewares: Array<IActionMiddlewareFactory<T>>): IEditor<T> {
+  if (!name) {
+    throw new Error(`editor requires a name`);
+  }
+  if (!options) {
+    throw new Error(`editor requires options`);
+  }
+  if (!resource) {
+    throw new Error(`editor requires resource`);
   }
 
+  options = {
+    createImmediately: true,
+    id: 'id',
+    ...options,
+  };
+
   const descriptor: IEditorDescriptor<T> = {
-    resource: resource,
-    name: name,
-    options: options,
+    resource,
+    name,
+    options,
     actions: makeEditorActions(name),
     creators: makeEditorCreators(name, makeEditorActions(name)),
     selectors: makeEditorSelectors(name, options, resource),
@@ -100,8 +114,8 @@ export function createEditor<T>(name: string, options: IEditorOptions, resource:
 
   return {
     ...descriptor,
-    resource: resource,
+    resource,
     reducer: makeEditorReducer(descriptor, options),
-    saga: makeEditorSaga(descriptor, options, ...middlewares.map(f => f(descriptor)))
-  }
+    saga: makeEditorSaga(descriptor, options, middlewares),
+  };
 }

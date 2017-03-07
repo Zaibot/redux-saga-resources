@@ -1,11 +1,13 @@
+import { Action } from 'redux';
+import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
+import { isTempKey, makeTempKey } from '../utils/tempKey';
 import makeActions from './actions';
 import makeCreators from './creators';
 import makeDataSelectors from './dataSelectors';
+import { fields, selectors as fieldSelectors, stripFields } from './fields';
 import makeReducer from './reducer';
 import makeSaga from './saga';
 import makeSelectors from './selectors';
-import { fields, selectors as fieldSelectors, stripFields } from './fields';
-import { makeTempKey, isTempKey } from '../utils/tempKey';
 
 export type Status = false | { time: number };
 
@@ -44,38 +46,38 @@ export interface ICreators<T> {
   doCreate(item: T): any;
   doCreateCancel(item: T): any;
   doCreateSuccess(item: T): any;
-  doCreateFailure(item: T, reason): any;
+  doCreateFailure(item: T, reason: string): any;
 
   doRead(item: T): any;
   doReadCancel(item: T): any;
   doReadSuccess(item: T): any;
-  doReadFailure(item: T, reason): any;
+  doReadFailure(item: T, reason: string): any;
 
   doUpdate(item: T): any;
   doUpdateCancel(item: T): any;
   doUpdateSuccess(item: T): any;
-  doUpdateFailure(item: T, reason): any;
+  doUpdateFailure(item: T, reason: string): any;
 
   doDelete(item: T): any;
   doDeleteCancel(item: T): any;
   doDeleteSuccess(item: T): any;
-  doDeleteFailure(item: T, reason): any;
+  doDeleteFailure(item: T, reason: string): any;
 
   doList(params?: any): any;
   doListCancel(): any;
   doListSuccess(list: T[], params: any): any;
-  doListFailure(reason, params: any): any;
+  doListFailure(reason: string, params: any): any;
 
   doReset(): any;
 }
 
 export interface ISelectors<T> {
-  loading(state): boolean;
-  error(state): string;
-  items(state): T[];
-  itemById(id): (state) => T;
-  itemByItem(item: T): (state) => T;
-  params(state): any;
+  loading(state: any): boolean;
+  error(state: any): string;
+  items(state: any): T[];
+  itemById(id: string): (state: any) => T;
+  itemByItem(item: T): (state: any) => T;
+  params(state: any): any;
 }
 
 export interface IFieldSelectors<T> {
@@ -116,74 +118,84 @@ export interface IResourceDescriptor<T> {
   hasSameId(left: T, right: T): boolean;
 }
 export interface IResource<T> extends IResourceDescriptor<T> {
-  create(props): any;
-  reducer: (state, action) => any;
-  saga: () => any;
+  create(props: T|any): any;
+  reducer(state: any, action: Action): any;
+  saga(): any;
 }
 
 export interface IMiddlewareFactory<T> {
-  (resource: IResourceDescriptor<T>): IMiddleware;
-}
-export interface IMiddleware {
-  (action, next: (action?) => any);
+  (resource: IResourceDescriptor<T>): IMiddleware<any>;
 }
 
-export function createResource<T>(name: string, options: IResourceOptions, ...middlewares: IMiddlewareFactory<T>[]): IResource<T> {
-  if (!name) throw new Error(`resource requires a name`)
-  if (!options) throw new Error(`resource requires options`)
+export function createResource<T>(name: string, options: IResourceOptions, ...middlewares: Array<IMiddlewareFactory<T>>): IResource<T> {
+  if (!name) {
+    throw new Error(`resource requires a name`);
+  }
+  if (!options) {
+    throw new Error(`resource requires options`);
+  }
 
   options = {
     id: 'id',
-    ...options
-  }
+    ...options,
+  };
 
   const descriptor: IResourceDescriptor<T> = {
-    name: name,
-    data: makeDataSelectors(options),
-    options: options,
+    name,
+    options,
     actions: makeActions(name),
-    creators: makeCreators(name, makeActions(name)),
-    selectors: makeSelectors(name, options, entityHasSameId(options)),
+    creators: makeCreators<T>(name, makeActions(name)),
+    data: makeDataSelectors<T>(options),
     fields: fieldSelectors,
-    hasSameId: entityHasSameId(options)
+    hasSameId: entityHasSameId(options),
+    selectors: makeSelectors<T>(name, options, entityHasSameId(options)),
   };
 
   return {
     ...descriptor,
-    hasSameId: descriptor.hasSameId,
     create: (props) => ({
       ...stripFields(props),
-      [fields.tempId]: makeTempKey()
+      [fields.tempId]: makeTempKey(),
     }),
+    hasSameId: descriptor.hasSameId,
     reducer: makeReducer(descriptor),
-    saga: makeSaga(descriptor, ...middlewares.map(f => f(descriptor)))
-  }
+    saga: makeSaga(descriptor, ...middlewares.map((f) => f(descriptor))),
+  };
 }
 
-function entityHasSameId(options) {
+function entityHasSameId<T>(options: IResourceOptions) {
   const { id: internalId, tempId } = fields;
   const { id } = options;
-  var leftId, rightId;
+  let leftId: string;
+  let rightId: string;
 
-  return (left, right) => {
-    if (left === right) return true;
+  return (left: T, right: T) => {
+    if (left === right) {
+      return true;
+    }
     if (left && right) {
       // Internal ID
       leftId = left[internalId];
       rightId = right[internalId];
-      if (leftId && (leftId === rightId)) return true;
+      if (leftId && (leftId === rightId)) {
+        return true;
+      }
 
       // Object ID
       if (id) {
         leftId = left[id];
         rightId = right[id];
-        if (leftId && (leftId === rightId)) return true;
+        if (leftId && (leftId === rightId)) {
+          return true;
+        }
       }
 
       // Temporary ID
       leftId = left[tempId];
       rightId = right[tempId];
-      if (leftId && (leftId === rightId)) return true;
+      if (leftId && (leftId === rightId)) {
+        return true;
+      }
     }
     return false;
   };

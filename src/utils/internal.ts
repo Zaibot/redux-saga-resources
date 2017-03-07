@@ -1,2 +1,2 @@
-export const internal = (id) => `@@saga-resources/${id}`;
-export const isInternal = (id) => /^@@saga-resources\//.test(id);
+export const internal = (id: string) => `@@saga-resources/${id}`;
+export const isInternal = (id: string) => /^@@saga-resources\//.test(id);

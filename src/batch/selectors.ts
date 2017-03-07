@@ -1,18 +1,22 @@
-import { internal } from '../utils/internal';
+import { IBatchOptions } from '.';
+import { IResource } from '../resource';
 import { fields } from '../resource/fields';
+import { internal } from '../utils/internal';
 
-export default function selectors<T>(name, options, resource) {
-  const scope = (state) => {
-    const scope = state[`${name}Batch`];
-    if (!scope) throw new Error(`Register reducer of batch ${name} in the store under: "${name}Batch"`)
-    return scope;
+export default function selectors<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>) {
+  const scope = (state: any) => {
+    const scopeName = state[`${name}Batch`];
+    if (!scopeName) {
+      throw new Error(`Register reducer of batch ${name} in the store under: "${name}Batch"`);
+    }
+    return scopeName;
   };
   return {
-    creating: (state) => scope(state).creating,
-    reading: (state) => scope(state).reading,
-    updating: (state) => scope(state).updating,
-    deleting: (state) => scope(state).deleting,
-    sourceItems: (state): T[] => scope(state).items,
-    item: (state): T => scope(state).item
-  }
+    creating: (state: any) => scope(state).creating,
+    deleting: (state: any) => scope(state).deleting,
+    item: (state: any): T => scope(state).item,
+    reading: (state: any) => scope(state).reading,
+    sourceItems: (state: any): T[] => scope(state).items,
+    updating: (state: any) => scope(state).updating,
+  };
 }

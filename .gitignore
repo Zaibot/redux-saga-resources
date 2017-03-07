@@ -1,4 +1,5 @@
 dist/
 node_modules/
 es6/
+node/
 npm-debug.log.*

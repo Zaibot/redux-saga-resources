@@ -5,35 +5,38 @@
   "typings": "es6/index.d.ts",
   "main": "es6/index.js",
   "dependencies": {
-    "arrayq": "^0.1.5",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-2": "^6.22.0",
-    "isomorphic-fetch": "^2.2.1",
-    "redux-typescript-actions": "^1.2.0"
+    "arrayq": "^0.1.14",
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.33",
     "assert": "^1.4.1",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-node": "^5.1.1",
+    "babel-preset-stage-2": "^6.22.0",
     "co": "^4.6.0",
     "mocha": "^3.2.0",
-    "redux": "^3.6.0",
-    "redux-saga": "^0.14.3",
-    "ts-loader": "^2.0.0",
+    "tslint": "^4.5.1",
     "typescript": "^2.1.5"
   },
   "peerDependencies": {
+    "redux-typescript-actions": "^1.2.0",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.3"
   },
   "scripts": {
-    "prepublish": "npm run build && npm run test",
+    "prepublish": "npm run lint && npm run build && npm run test",
     "build": "npm run clean && npm run compile",
-    "clean": "rimraf es6/*",
-    "compile": "npm run compile:ts",
+    "clean": "rimraf es6/* && rimraf node/*",
+    "compile": "npm run compile:ts && npm run compile:node",
     "compile:ts": "tsc -p tsconfig.json",
+    "compile:node": "babel es6 --out-dir node",
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint:fix": "tslint -c tslint.json src/**/*.ts --fix",
     "test": "mocha test",
-    "watch": "nodemon -w **/* -i es6 --exec \"npm run compile && npm run test\""
+    "watch": "nodemon -w src -w test -e \"ts js\" --exec \"npm run compile && npm run test\""
   },
   "repository": {
     "type": "git",

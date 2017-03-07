@@ -1,7 +1,7 @@
 const assert = require('assert');
 const {
   createResource
-} = require('../es6');
+} = require('../node');
 
 describe('resource', () => {
   describe('create', () => {

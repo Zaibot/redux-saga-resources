@@ -1,26 +1,27 @@
+import { IResourceDescriptor } from '../resource';
 import { fields } from '../resource/fields';
 
-export function listAddOrUpdate(descriptor, list, bareItem, transform) {
+export function listAddOrUpdate<T>(descriptor: IResourceDescriptor<T>, list: T[], bareItem: T, transform: (item: T) => T) {
   const { hasSameId } = descriptor;
-  var count = 0;
+  let count = 0;
   const res = list.map((item) => {
     if (!hasSameId(item, bareItem)) {
       return item;
     }
     // Update existing.
     ++count;
-    const res = transform(item);
-    return res;
+    const updated = transform(item);
+    return updated;
   });
   if (count === 0) {
     // Add new.
     res.push(transform({
-            ...bareItem
+            ...(bareItem as any),
         }));
 }
-return res;
+  return res;
 }
 
-export function listRemove(descriptor, list, bareItem) {
-  return list.filter(item => !descriptor.hasSameId(item, bareItem));
+export function listRemove<T>(descriptor: IResourceDescriptor<T>, list: T[], bareItem: T) {
+  return list.filter((item) => !descriptor.hasSameId(item, bareItem));
 }

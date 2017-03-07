@@ -2,7 +2,7 @@ const assert = require('assert');
 const {
   createResource,
   createEditor
-} = require('../es6');
+} = require('../node');
 
 describe('resource', () => {
   describe('create', () => {

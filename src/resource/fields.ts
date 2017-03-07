@@ -1,18 +1,19 @@
+import { IFieldSelectors } from '.';
 import { internal } from '../utils/internal';
 
 export const fields = {
-  id: Symbol(internal('id')),
-  tempId: Symbol(internal('tempId')),
   error: Symbol(internal('error')),
-  isModified: Symbol(internal('isModified')),
-  isReading: Symbol(internal('isReading')),
-  isRead: Symbol(internal('isRead')),
-  isCreating: Symbol(internal('isCreating')),
+  id: Symbol(internal('id')),
   isCreated: Symbol(internal('isCreated')),
-  isRemoving: Symbol(internal('isRemoving')),
+  isCreating: Symbol(internal('isCreating')),
+  isModified: Symbol(internal('isModified')),
+  isRead: Symbol(internal('isRead')),
+  isReading: Symbol(internal('isReading')),
   isRemoved: Symbol(internal('isRemoved')),
+  isRemoving: Symbol(internal('isRemoving')),
+  isUpdated: Symbol(internal('isUpdated')),
   isUpdating: Symbol(internal('isUpdating')),
-  isUpdated: Symbol(internal('isUpdated'))
+  tempId: Symbol(internal('tempId')),
 };
 
 // export const fields = {
@@ -30,29 +31,27 @@ export const fields = {
 //     isUpdated: internal('isUpdated')
 // };
 
-export const selectors = {
-  key: (item) => item[fields.id] || item[fields.tempId],
-  id: (item) => item[fields.id],
-  tempId: (item) => item[fields.tempId],
-  error: (item) => item[fields.error],
-  isModified: (item) => item[fields.isModified],
-  isReading: (item) => item[fields.isReading],
-  isRead: (item) => item[fields.isRead],
-  isCreating: (item) => item[fields.isCreating],
-  isCreated: (item) => item[fields.isCreated],
-  isRemoving: (item) => item[fields.isRemoving],
-  isRemoved: (item) => item[fields.isRemoved],
-  isUpdating: (item) => item[fields.isUpdating],
-  isUpdated: (item) => item[fields.isUpdated],
-
-  // computed
-  isUnchanged: (item) => !item[fields.isReading] && !item[fields.isCreating] && !item[fields.isRemoving] && !item[fields.isUpdating],
-  isChanging: (item) => item[fields.isReading] || item[fields.isCreating] || item[fields.isRemoving] || item[fields.isUpdating],
-  neverCommited: (item) => !item[fields.isRead] && !item[fields.isCreated] && !item[fields.isRemoved] && !item[fields.isUpdated],
-  hasCommited: (item) => item[fields.isRead] || item[fields.isCreated] || item[fields.isRemoved] || item[fields.isUpdated]
+export const selectors: IFieldSelectors<any> = {
+  error: (item: any) => item[fields.error],
+  hasCommited: (item: any) => item[fields.isRead] || item[fields.isCreated] || item[fields.isRemoved] || item[fields.isUpdated],
+  id: (item: any) => item[fields.id],
+  isChanging: (item: any) => item[fields.isReading] || item[fields.isCreating] || item[fields.isRemoving] || item[fields.isUpdating],
+  isCreated: (item: any) => item[fields.isCreated],
+  isCreating: (item: any) => item[fields.isCreating],
+  isModified: (item: any) => item[fields.isModified],
+  isRead: (item: any) => item[fields.isRead],
+  isReading: (item: any) => item[fields.isReading],
+  isRemoved: (item: any) => item[fields.isRemoved],
+  isRemoving: (item: any) => item[fields.isRemoving],
+  isUnchanged: (item: any) => !item[fields.isReading] && !item[fields.isCreating] && !item[fields.isRemoving] && !item[fields.isUpdating],
+  isUpdated: (item: any) => item[fields.isUpdated],
+  isUpdating: (item: any) => item[fields.isUpdating],
+  key: (item: any) => item[fields.id] || item[fields.tempId],
+  neverCommited: (item: any) => !item[fields.isRead] && !item[fields.isCreated] && !item[fields.isRemoved] && !item[fields.isUpdated],
+  tempId: (item: any) => item[fields.tempId],
 };
 
-export const stripFields = (obj) => {
+export const stripFields = <T>(obj: T): T => {
   const {
     [fields.id]: id,
     [fields.tempId]: tempId,
@@ -66,28 +65,27 @@ export const stripFields = (obj) => {
     [fields.isRemoved]: isRemoved,
     [fields.isUpdating]: isUpdating,
     [fields.isUpdated]: isUpdated,
-        ...remainder
-    } = obj;
-const cleaned = { ...remainder };
-return cleaned;
+    ...remainder,
+  } = obj as any;
+  const cleaned = { ...remainder };
+  return cleaned as any;
 };
 
-export const copyFields = (target, src) => {
+export const extractFields = (obj: any): any => {
   return {
-      ...target,
-      ...{
-  [fields.id]: src[fields.id],
-    [fields.tempId]: src[fields.tempId],
-      [fields.error]: src[fields.error],
-        [fields.isModified]: src[fields.isModified],
-          [fields.isReading]: src[fields.isReading],
-            [fields.isRead]: src[fields.isRead],
-              [fields.isCreating]: src[fields.isCreating],
-                [fields.isCreated]: src[fields.isCreated],
-                  [fields.isRemoving]: src[fields.isRemoving],
-                    [fields.isRemoved]: src[fields.isRemoved],
-                      [fields.isUpdating]: src[fields.isUpdating],
-                        [fields.isUpdated]: src[fields.isUpdated],
-      }
-    };
+    [fields.id]: obj[fields.id],
+    [fields.tempId]: obj[fields.tempId],
+    [fields.error]: obj[fields.error],
+    [fields.isModified]: obj[fields.isModified],
+    [fields.isReading]: obj[fields.isReading],
+    [fields.isRead]: obj[fields.isRead],
+    [fields.isCreating]: obj[fields.isCreating],
+    [fields.isCreated]: obj[fields.isCreated],
+    [fields.isRemoving]: obj[fields.isRemoving],
+    [fields.isRemoved]: obj[fields.isRemoved],
+    [fields.isUpdating]: obj[fields.isUpdating],
+    [fields.isUpdated]: obj[fields.isUpdated],
+  };
 };
+
+export const copyFields = <T>(target: any, fieldsSource: any) => ({ ...target, ...extractFields(fieldsSource) });

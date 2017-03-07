@@ -4,8 +4,8 @@ const createSagaMiddleware = require('redux-saga').default;
 const {
   restMiddleware,
   jsonSerializationMiddleware
-} = require('../es6/middlewares/json');
-const applyMiddlewares = require('../es6/utils/applyMiddlewares').default;
+} = require('../node/middlewares/json');
+const applyMiddlewares = require('../node/utils/applyMiddlewares').default;
 
 function faker(items) {
   var res = {

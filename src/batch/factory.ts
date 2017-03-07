@@ -1,36 +1,43 @@
 import { IResource } from '../resource';
-import { IBatchDescriptor, IBatchOptions, IBatch, IBatchMerger } from './interfaces';
+import { IBatch, IBatchDescriptor, IBatchMerger, IBatchOptions, ISagaMiddlewareFactory } from './interfaces';
 
+import { IMiddleware } from '../utils/applyMiddlewares';
 import makeBatchActions from './actions';
-import makeBatchSelectors from './selectors';
+import { Merger } from './merger';
 import makeBatchReducer from './reducer';
 import makeBatchSaga from './saga';
-import { Merger } from './merger';
+import makeBatchSelectors from './selectors';
 
-export function createBatch<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>, ...middlewares): IBatch<T> {
-  if (!name) throw new Error(`batch requires a name`)
-  if (!options) throw new Error(`batch requires options`)
-  if (!resource) throw new Error(`batch requires resource`)
-
-  options = {
-    id: 'id',
-    createImmediately: true,
-    ...options
+export function createBatch<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>, ...middlewares: Array<ISagaMiddlewareFactory<T>>): IBatch<T> {
+  if (!name) {
+    throw new Error(`batch requires a name`);
+  }
+  if (!options) {
+    throw new Error(`batch requires options`);
+  }
+  if (!resource) {
+    throw new Error(`batch requires resource`);
   }
 
+  options = {
+    createImmediately: true,
+    id: 'id',
+    ...options,
+  };
+
   const descriptor: IBatchDescriptor<T> = {
+    actions: makeBatchActions<T>(name),
     merger: options.merger || new Merger<T>(),
-    resource: resource,
-    name: name,
-    options: options,
-    actions: makeBatchActions(name),
+    name,
+    options,
+    resource,
     selectors: makeBatchSelectors<T>(name, options, resource),
   };
 
   return {
     ...descriptor,
-    resource: resource,
+    resource,
     reducer: makeBatchReducer(descriptor, options),
-    saga: makeBatchSaga(descriptor, options, ...middlewares.map(f => f(descriptor)))
-  }
+    saga: makeBatchSaga(descriptor, options, middlewares),
+  };
 }

@@ -1,8 +1,9 @@
+import { Action } from 'redux';
 import { takeEvery } from 'redux-saga';
-import { call, take, race, put, fork, join } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
+import { call, fork, join, put, race, take } from 'redux-saga/effects';
+import { IResource, IResourceDescriptor } from '../resource';
 import { fields, stripFields } from '../resource/fields';
-import { IResource } from '../resource';
 
 const configTimeout = 8000;
 
@@ -14,8 +15,8 @@ export interface IHttpApiHandler {
   del(path: string, entity: any): /*CallEffect*/ any;
 }
 
-export function httpMiddleware(api: IHttpApiHandler, path: string) {
-  return (descriptor) => {
+export function httpMiddleware<T>(api: IHttpApiHandler, path: string) {
+  return (descriptor: IResourceDescriptor<T>) => {
     const fnCreate = sagaCreate(api, path, descriptor);
     const fnRead = sagaRead(api, path, descriptor);
     const fnUpdate = sagaUpdate(api, path, descriptor);
@@ -27,10 +28,10 @@ export function httpMiddleware(api: IHttpApiHandler, path: string) {
       [descriptor.actions.READ]: fnRead,
       [descriptor.actions.UPDATE]: fnUpdate,
       [descriptor.actions.DELETE]: fnDelete,
-      [descriptor.actions.LIST]: fnList
+      [descriptor.actions.LIST]: fnList,
     };
 
-    return function* (action, next) {
+    return function* (action: Action, next: any) {
       if (action.type in mapping) {
         yield* mapping[action.type](next)(action);
       }
@@ -38,33 +39,32 @@ export function httpMiddleware(api: IHttpApiHandler, path: string) {
   };
 }
 
-
-function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T>) {
-  return next => function* (action) {
+function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
+  return (next: any) => function* (action: any) {
     const tempId = action.payload.item[fields.tempId];
     const {
       id,
-      ...item
+      ...item,
   } = stripFields(action.payload.item);
-  const {
+    const {
     res,
     cancel,
-    timeout
+    timeout,
   } = yield race({
-    res: api.post(`${path}`, item),
     cancel: take([descriptor.actions.CREATE_CANCEL, descriptor.actions.RESET]),
-    timeout: call(delay, configTimeout)
+    res: api.post(`${path}`, item),
+    timeout: call(delay, configTimeout),
   });
 
-  if (res && res.ok) {
+    if (res && res.ok) {
     // Success.
     const data = yield call(() => res.json());
     yield put(descriptor.creators.doCreateSuccess({
         ...action.payload.item,
       ...data,
-      [fields.id]: descriptor.data.id(data)
+      [fields.id]: descriptor.data.id(data),
       }));
-  yield * next();
+    yield * next();
 } else if (cancel) {
   // Cancelled.
   yield * next();
@@ -75,23 +75,23 @@ function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 } else {
   // Error.
   yield put(descriptor.creators.doCreateFailure({ ...action.payload.item }, `${res.status} ${res.statusText}`));
-yield * next();
+  yield * next();
     }
   };
 }
 
-function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T>) {
-  return next => function* (action) {
+function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
+  return (next: any) => function* (action: any) {
     const key = descriptor.data.id(action.payload.item);
     const item = stripFields(action.payload.item);
     const {
       res,
       cancel,
-      timeout
+      timeout,
     } = yield race({
-      res: api.get(`${path}/${key}`),
       cancel: take([descriptor.actions.READ_CANCEL, descriptor.actions.RESET]),
-      timeout: call(delay, configTimeout)
+      res: api.get(`${path}/${key}`),
+      timeout: call(delay, configTimeout),
     });
 
     if (res && res.ok) {
@@ -100,9 +100,9 @@ function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T
       yield put(descriptor.creators.doReadSuccess({
         ...action.payload.item,
         ...data,
-        [fields.id]: key
+        [fields.id]: key,
       }));
-    yield* next();
+      yield* next();
   } else if (cancel) {
     // Cancelled.
     yield * next();
@@ -118,29 +118,29 @@ function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T
 };
 }
 
-function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T>) {
-  return next => function* (action) {
+function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
+  return (next: any) => function* (action: any) {
     const key = descriptor.data.id(action.payload.item);
     const item = stripFields(action.payload.item);
     const {
       res,
       cancel,
-      timeout
+      timeout,
     } = yield race({
-      res: api.put(`${path}/${key}`, { ...item, id: key }),
       cancel: take([descriptor.actions.UPDATE_CANCEL, descriptor.actions.RESET]),
-      timeout: call(delay, configTimeout)
+      res: api.put(`${path}/${key}`, { ...item, id: key }),
+      timeout: call(delay, configTimeout),
   });
 
-  if (res && res.ok) {
+    if (res && res.ok) {
     // Success.
     const data = yield call(() => res.json());
     yield put(descriptor.creators.doUpdateSuccess({
         ...action.payload.item,
       ...data,
-      [fields.id]: data.id
+      [fields.id]: data.id,
       }));
-  yield * next();
+    yield * next();
 } else if (cancel) {
   // Cancelled.
   yield * next();
@@ -151,13 +151,13 @@ function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 } else {
   // Error.
   yield put(descriptor.creators.doUpdateFailure({ ...action.payload.item }, `${res.status} ${res.statusText}`));
-yield * next();
+  yield * next();
     }
   };
 }
 
-function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T>) {
-  return next => function* (action) {
+function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
+  return (next: any) => function* (action: any) {
     if (descriptor.fields.neverCommited(action.payload.item)) {
       yield put(descriptor.creators.doDeleteSuccess(action.payload.item));
       yield* next();
@@ -169,11 +169,11 @@ function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource
     const {
       res,
       timeout,
-      cancel
+      cancel,
     } = yield race({
-      res: api.del(`${path}/${key}`, item),
       cancel: take([descriptor.actions.DELETE_CANCEL, descriptor.actions.RESET]),
-      timeout: call(delay, configTimeout)
+      res: api.del(`${path}/${key}`, item),
+      timeout: call(delay, configTimeout),
     });
 
     if (res && (res.ok || res.status === 404)) {
@@ -195,42 +195,42 @@ function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource
   };
 }
 
-function sagaList<T>(api: IHttpApiHandler, path: string, descriptor: IResource<T>) {
-  return next => function* (action) {
+function sagaList<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
+  return (next: any) => function* (action: any) {
     try {
       const {
         res,
         cancel,
-        timeout
+        timeout,
       } = yield race({
-        res: api.get(`${path}`),
         cancel: take([descriptor.actions.LIST_CANCEL, descriptor.actions.RESET]),
-        timeout: call(delay, configTimeout)
+        res: api.get(`${path}`),
+        timeout: call(delay, configTimeout),
       });
 
       if (res && res.ok) {
         // Success.
         const data = yield call(() => res.json());
-        yield put(descriptor.creators.doListSuccess(data.map(item => ({
+        yield put(descriptor.creators.doListSuccess(data.map((item: T) => ({
           [fields.id]: descriptor.data.id(item),
           [fields.isRead]: true,
-          ...item
-        })), action.params));
-      yield* next();
-    } else if (cancel) {
-      // Cancelled.
-      yield* next();
-    } else if (timeout) {
-      // Timeout.
-      yield put(descriptor.creators.doListFailure(action.payload.item, `timedout`));
-      yield* next();
-    } else {
-      // Error.
-      yield put(descriptor.creators.doListFailure(`${res.status} ${res.statusText}`, action.payload.params));
-      yield* next();
+          ...(item as any),
+          })), action.params));
+        yield* next();
+      } else if (cancel) {
+        // Cancelled.
+        yield* next();
+      } else if (timeout) {
+        // Timeout.
+        yield put(descriptor.creators.doListFailure(action.payload.item, `timedout`));
+        yield* next();
+      } else {
+        // Error.
+        yield put(descriptor.creators.doListFailure(`${res.status} ${res.statusText}`, action.payload.params));
+        yield* next();
+      }
+    } catch (ex) {
+      yield put(descriptor.creators.doListFailure(`${ex.message}`, action.payload.params));
     }
-  } catch (ex) {
-    yield put(descriptor.creators.doListFailure(`${ex.message}`, action.payload.params));
-  }
-};
+  };
 }
