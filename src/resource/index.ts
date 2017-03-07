@@ -82,8 +82,8 @@ export interface ISelectors<T> {
 
 export interface IFieldSelectors<T> {
   key(item: T): string;
-  id(item: T): string;
-  tempId(item: T): string;
+  id(item: T): any;
+  tempId(item: T): any;
   error(item: T): any;
   isModified(item: T): Status;
   isReading(item: T): Status;
@@ -104,7 +104,7 @@ export interface IDataSelectors<T> {
 }
 
 export interface IResourceOptions {
-  id?: string;
+  id?: any;
 }
 
 export interface IResourceDescriptor<T> {

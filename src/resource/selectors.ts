@@ -13,7 +13,7 @@ export default function selectors<T>(name: string, options: IResourceOptions, ha
     };
     return {
         error: (state: any) => scope(state).error as string,
-        itemById: (id: string) => (state: any) => scope(state).list.qFirst((item: T) => hasSameId(item, { [options.id]: id } as any)),
+        itemById: (id: any) => (state: any) => scope(state).list.qFirst((item: T) => hasSameId(item, { [options.id]: id } as any)),
         itemByItem: (item: T) => (state: any) => scope(state).list.qFirst((existing: T) => hasSameId(item, existing)),
         items: (state: any) => scope(state).list as T[],
         loading: (state: any) => scope(state).loading as boolean,

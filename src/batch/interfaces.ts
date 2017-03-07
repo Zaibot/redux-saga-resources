@@ -41,7 +41,7 @@ export interface IBatchMerger<T> {
 }
 export interface IBatchOptions<T> {
   createImmediately?: boolean;
-  id?: string;
+  id?: any;
   merger?: IBatchMerger<T>;
 }
 export interface IBatchDescriptor<T> {

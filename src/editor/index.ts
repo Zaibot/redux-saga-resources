@@ -71,7 +71,7 @@ export interface IEditorSelectors<T> {
 }
 export interface IEditorOptions {
   createImmediately?: boolean;
-  id?: string;
+  id?: any;
 }
 export interface IEditorDescriptor<T> {
   name: string;
