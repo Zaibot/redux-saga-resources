@@ -201,6 +201,17 @@ function* safeFetch(url: string, options: any) {
         };
     }
 }
+function headersToObject(headers: any) {
+  if (headers.get && headers.keys) {
+    const keys = headers.keys();
+    const res: any = {};
+    for (const key of keys) {
+      res[key] = headers.get(key);
+    }
+    return res;
+  }
+  return headers;
+}
 export function* fetchMiddleware({ request, response, withResponse }: any, next: any) {
     const paramKeys = Object.keys(request.params);
     const params = paramKeys.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
@@ -217,7 +228,7 @@ export function* fetchMiddleware({ request, response, withResponse }: any, next:
     response.statusText = result.statusText;
     response.statusCode = result.status;
     response.url = result.url;
-    response.headers = result.headers;
+    response.headers = headersToObject(result.headers);
     try {
         response.body = yield call(() => result.json());
     } catch (ex) {
