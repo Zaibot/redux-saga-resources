@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-resources",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "",
   "typings": "es6/index.d.ts",
   "main": "es6/index.js",
