@@ -1,10 +1,3 @@
 {
-  "extends": "tslint:recommended",
-  "rules": {
-    "max-line-length": [false],
-    "quotemark": [true, "single", "jsx-double"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
-    "no-var-requires": [false],
-    "no-console": [false]
-  }
+  "extends": "@zaibot/tslint-preset"
 }
