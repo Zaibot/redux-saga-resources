@@ -1,11 +1,11 @@
 import { Action } from 'redux';
-import { takeEvery } from 'redux-saga';
 import { delay } from 'redux-saga';
-import { call, fork, join, put, race, take } from 'redux-saga/effects';
-import { IResource, IResourceDescriptor } from '../resource';
+import { call, put, race, take } from 'redux-saga/effects';
+import { IResourceDescriptor } from '../resource';
 import { fields, stripFields } from '../resource/fields';
 
 const configTimeout = 8000;
+const http404 = 404;
 
 export interface IHttpApiHandler {
   get(path: string): /*CallEffect*/ any;
@@ -41,11 +41,8 @@ export function httpMiddleware<T>(api: IHttpApiHandler, path: string) {
 
 function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
   return (next: any) => function* (action: any) {
-    const tempId = action.payload.item[fields.tempId];
-    const {
-      id,
-      ...item,
-  } = stripFields(action.payload.item);
+    const item = stripFields(action.payload.item);
+    delete item[descriptor.options.id];
     const {
     res,
     cancel,
@@ -83,7 +80,6 @@ function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
   return (next: any) => function* (action: any) {
     const key = descriptor.data.id(action.payload.item);
-    const item = stripFields(action.payload.item);
     const {
       res,
       cancel,
@@ -176,7 +172,7 @@ function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource
       timeout: call(delay, configTimeout),
     });
 
-    if (res && (res.ok || res.status === 404)) {
+    if (res && (res.ok || res.status === http404)) {
       // Success, or non existing.
       yield put(descriptor.creators.doDeleteSuccess(action.payload.item));
       yield* next();

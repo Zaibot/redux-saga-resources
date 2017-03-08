@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { takeEvery } from 'redux-saga';
-import { call, put, race, select, take } from 'redux-saga/effects';
-import { ActionCreator, isType } from 'redux-typescript-actions';
+import { put, select } from 'redux-saga/effects';
+import { isType } from 'redux-typescript-actions';
 import { IBatchDescriptor, IBatchOptions } from '.';
 import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
 
@@ -10,17 +10,6 @@ function stopMiddleware<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptio
     // Nothing.
   };
 }
-
-function interceptor<T>(descriptor: IBatchDescriptor<T>, actionType: ActionCreator<any>, cb: (action: Action, items: T[], item: T) => IterableIterator<any>) {
-  return <IMiddleware<any>> function* (action, next) {
-    if (isType(action, actionType)) {
-      const item: T = yield select(descriptor.selectors.item);
-      const items: T[] = yield select(descriptor.selectors.sourceItems);
-      yield* cb(action, items, item);
-    }
-    yield* next(action);
-  };
-};
 
 function resourceUpdate<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
   return <IMiddleware<any>> function* (action, next) {
@@ -85,7 +74,11 @@ function resourceDeleteContinue<T>(descriptor: IBatchDescriptor<T>, options: IBa
   };
 }
 
-export default function makeSaga<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>, middlewares: Array<(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) => IMiddleware<any>>) {
+export interface IMiddlewareFactory<T> {
+  (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>): IMiddleware<any>;
+}
+
+export default function makeSaga<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>, middlewares: Array<IMiddlewareFactory<T>>) {
   const {
     resource,
   } = descriptor;

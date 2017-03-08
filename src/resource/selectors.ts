@@ -1,7 +1,5 @@
 import 'arrayq';
 import { IResourceOptions, ISelectors } from '.';
-import { internal } from '../utils/internal';
-import { fields } from './fields';
 
 export default function selectors<T>(name: string, options: IResourceOptions, hasSameId: (l: T, r: T) => boolean): ISelectors<T> {
     const scope = (state: any) => {

@@ -4,8 +4,13 @@
 
 import fetch from 'isomorphic-fetch';
 import { call, put, select } from 'redux-saga/effects';
-import { IResourceDescriptor, IResourceOptions } from '../resource';
+import { IResourceDescriptor } from '../resource';
 import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
+
+const http200 = 200;
+const http201 = 201;
+const http204 = 204;
+const http404 = 404;
 
 export function authBearerMiddleware(selector: () => string): IMiddleware<any> {
     return function* internal({ request }: any, next: any) {
@@ -125,11 +130,11 @@ export function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
 
 const getStatusOk = (...codes: number[]) => (code: number) => codes.indexOf(code) > -1;
 export function restMiddleware(options: { url: string; id: string; }) {
-    const isListOk = getStatusOk(200);
-    const isReadOk = getStatusOk(200);
-    const isCreateOk = getStatusOk(200, 201, 204);
-    const isUpdateOk = getStatusOk(200, 204);
-    const isDeleteOk = getStatusOk(200, 204, 404);
+    const isListOk = getStatusOk(http200);
+    const isReadOk = getStatusOk(http200);
+    const isCreateOk = getStatusOk(http200, http201, http204);
+    const isUpdateOk = getStatusOk(http200, http204);
+    const isDeleteOk = getStatusOk(http200, http204, http404);
 
     return function* internal(context: any, next: any) {
         const request: any = context.request = {
@@ -212,7 +217,7 @@ function headersToObject(headers: any) {
   }
   return headers;
 }
-export function* fetchMiddleware({ request, response, withResponse }: any, next: any) {
+export function* fetchMiddleware({ request, response }: any, next: any) {
     const paramKeys = Object.keys(request.params);
     const params = paramKeys.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
     const baseUrl = request.url;
@@ -248,7 +253,7 @@ export function* jsonSerializationMiddleware({ request, response }: any, next: a
 
     yield* next();
 
-    if (response.statusCode === 204) {
+    if (response.statusCode === http204) {
         // No content
     } else {
         if (/^application\/json/.test(response.headers['content-type'])) {

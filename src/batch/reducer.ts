@@ -1,7 +1,5 @@
 import { Action } from 'redux';
 import { isType } from 'redux-typescript-actions';
-import { fields, stripFields } from '../resource/fields';
-import { makeTempKey } from '../utils/tempKey';
 import { IBatchDescriptor, IBatchOptions } from './interfaces';
 
 export default function reducer<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {

@@ -1,5 +1,5 @@
 import { takeEvery } from 'redux-saga';
-import { call, fork } from 'redux-saga/effects';
+import { fork } from 'redux-saga/effects';
 import { IResourceDescriptor } from '.';
 import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
 

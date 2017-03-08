@@ -1,7 +1,5 @@
 import { IBatchOptions } from '.';
 import { IResource } from '../resource';
-import { fields } from '../resource/fields';
-import { internal } from '../utils/internal';
 
 export default function selectors<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>) {
   const scope = (state: any) => {

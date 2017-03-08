@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import actionCreatorFactory, { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
+import { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
 import { IResource } from '../resource';
 import { IMiddleware } from '../utils/applyMiddlewares';
 

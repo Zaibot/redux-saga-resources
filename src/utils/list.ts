@@ -1,5 +1,4 @@
 import { IResourceDescriptor } from '../resource';
-import { fields } from '../resource/fields';
 
 export function listAddOrUpdate<T>(descriptor: IResourceDescriptor<T>, list: T[], bareItem: T, transform: (item: T) => T) {
   const { hasSameId } = descriptor;

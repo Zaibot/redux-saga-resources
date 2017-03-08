@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
-import { isTempKey, makeTempKey } from '../utils/tempKey';
+import { IMiddleware } from '../utils/applyMiddlewares';
+import { makeTempKey } from '../utils/tempKey';
 import makeActions from './actions';
 import makeCreators from './creators';
 import makeDataSelectors from './dataSelectors';

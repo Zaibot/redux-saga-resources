@@ -1,4 +1,4 @@
-import actionCreatorFactory, { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
+import actionCreatorFactory from 'redux-typescript-actions';
 import { internal } from '../utils/internal';
 import { IBatchActions } from './interfaces';
 

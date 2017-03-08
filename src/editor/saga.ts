@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { takeEvery } from 'redux-saga';
-import { call, put, race, select, take } from 'redux-saga/effects';
-import { IActionMiddlewareFactory, IEditor, IEditorDescriptor, IEditorOptions } from '.';
+import { put, select } from 'redux-saga/effects';
+import { IActionMiddlewareFactory, IEditorDescriptor, IEditorOptions } from '.';
 import applyMiddlewares, { IMiddleware, IMiddlewareNext } from '../utils/applyMiddlewares';
 
 function interceptor<T>(descriptor: IEditorDescriptor<T>, actionType: string, cb: (action: Action, item: T) => any) {
@@ -47,7 +47,6 @@ function resourceRead<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptio
 }
 function resourceUpdate<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
     return interceptor(descriptor, descriptor.actions.UPDATE, function* (action: Action, item: T) {
-        const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
         yield put(descriptor.creators.doApply(item));
     });
 }

@@ -38,25 +38,25 @@ export interface IEditorActions {
 }
 
 export interface IEditorCreators<T> {
-  doApply(item: T | any): any;
+  doApply(item: T | any): Action;
 
-  doCreate(item: T | any): any;
-  doCreateCancel(): any;
-  doCreateContinue(item: T): any;
+  doCreate(item: T | any): Action;
+  doCreateCancel(): Action;
+  doCreateContinue(item: T): Action;
 
-  doRead(item: T): any;
-  doReadCancel(): any;
-  doReadContinue(item: T): any;
+  doRead(item: T): Action;
+  doReadCancel(): Action;
+  doReadContinue(item: T): Action;
 
-  doUpdate(item: T): any;
-  doUpdateCancel(): any;
-  doUpdateContinue(item: T): any;
+  doUpdate(item: T): Action;
+  doUpdateCancel(): Action;
+  doUpdateContinue(item: T): Action;
 
-  doDelete(item: T): any;
-  doDeleteCancel(): any;
-  doDeleteContinue(item: T): any;
+  doDelete(item: T): Action;
+  doDeleteCancel(): Action;
+  doDeleteContinue(item: T): Action;
 
-  doReset(): any;
+  doReset(): Action;
 }
 
 export interface IEditorSelectors<T> {

@@ -1,7 +1,6 @@
 import { Action } from 'redux';
 import { IEditorDescriptor, IEditorOptions } from '.';
-import { fields, stripFields } from '../resource/fields';
-import { makeTempKey } from '../utils/tempKey';
+import { stripFields } from '../resource/fields';
 
 export default function reducer<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions) {
     type State = { creating: boolean, reading: boolean, updating: boolean, deleting: boolean, error: string, item: T };

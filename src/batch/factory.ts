@@ -1,8 +1,6 @@
 import { IResource } from '../resource';
-import { IBatch, IBatchDescriptor, IBatchMerger, IBatchOptions, ISagaMiddlewareFactory } from './interfaces';
-
-import { IMiddleware } from '../utils/applyMiddlewares';
 import makeBatchActions from './actions';
+import { IBatch, IBatchDescriptor, IBatchOptions, ISagaMiddlewareFactory } from './interfaces';
 import { Merger } from './merger';
 import makeBatchReducer from './reducer';
 import makeBatchSaga from './saga';
