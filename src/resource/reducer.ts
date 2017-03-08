@@ -201,7 +201,7 @@ export default function reducer<T>(descriptor: IResourceDescriptor<T>) {
                 }),
             };
         }
-        if (action.type === actions.LIST_SUCCESS) {
+        if (action.type === actions.LIST) {
             // LIST
             return { ...state, loading: { time: Date.now() } };
         }
