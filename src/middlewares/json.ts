@@ -1,26 +1,10 @@
-/* tslint:disable */
-/// <reference path="./isomorphic-fetch.d.ts" />
-/* tslint:enable */
-
-import fetch from 'isomorphic-fetch';
-import { call, put, select } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import { IResourceDescriptor } from '../resource';
 import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
+import fetchMiddleware from './fetch';
+import restMiddleware from './rest';
 
-const http200 = 200;
-const http201 = 201;
 const http204 = 204;
-const http404 = 404;
-
-export function authBearerMiddleware(selector: () => string): IMiddleware<any> {
-    return function* internal({ request }: any, next: any) {
-        const token = yield select(selector);
-        if (token) {
-            request.headers.authorization = `Bearer ${token}`;
-        }
-        yield* next();
-    };
-}
 
 export interface IJsonResetParams {
     list?: any;
@@ -33,7 +17,7 @@ export interface IJsonResetParams {
     ok?: boolean;
 }
 
-export function defaultJsonRestMiddleware<T>(url: string, ...middlewares: Array<IMiddleware<IJsonResetParams>>) {
+export default function defaultJsonRestMiddleware<T>(url: string, ...middlewares: Array<IMiddleware<IJsonResetParams>>) {
     return (descriptor: IResourceDescriptor<T>) => {
         return connectMiddleware(restMiddleware({ id: descriptor.options.id, url }), ...middlewares, jsonSerializationMiddleware, fetchMiddleware);
     };
@@ -126,121 +110,6 @@ export function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             }
         }
     };
-}
-
-const getStatusOk = (...codes: number[]) => (code: number) => codes.indexOf(code) > -1;
-export function restMiddleware(options: { url: string; id: string; }) {
-    const isListOk = getStatusOk(http200);
-    const isReadOk = getStatusOk(http200);
-    const isCreateOk = getStatusOk(http200, http201, http204);
-    const isUpdateOk = getStatusOk(http200, http204);
-    const isDeleteOk = getStatusOk(http200, http204, http404);
-
-    return function* internal(context: any, next: any) {
-        const request: any = context.request = {
-            body: undefined,
-            headers: {},
-            method: 'GET',
-            params: {},
-            url: `${options.url}`,
-        };
-        const response: any = context.response = {
-            body: undefined,
-            headers: {},
-            statusCode: undefined,
-            statusText: undefined,
-            url: undefined,
-        };
-
-        const { list, create, read, update, remove } = context;
-        if (list) {
-            // List
-            request.method = 'GET';
-            request.url = `${options.url}`;
-            request.params = list;
-            yield* next();
-            context.ok = isListOk(response.statusCode);
-            context.listed = response.body;
-        } else if (read) {
-            // Read
-            request.method = 'GET';
-            request.url = `${options.url}/${read[options.id]}`;
-            yield* next();
-            context.ok = isReadOk(response.statusCode);
-            context.readed = response.body;
-        } else if (create) {
-            // Create
-            request.method = 'POST';
-            request.url = `${options.url}`;
-            request.body = create;
-            yield* next();
-            context.ok = isCreateOk(response.statusCode);
-            context.created = response.body;
-        } else if (update) {
-            // Update
-            request.method = 'PUT';
-            request.url = `${options.url}/${update[options.id]}`;
-            request.body = update;
-            yield* next();
-            context.ok = isUpdateOk(response.statusCode);
-            context.updated = response.body;
-        } else if (remove) {
-            // Remove
-            request.method = 'DELETE';
-            request.url = `${options.url}/${remove[options.id]}`;
-            yield* next();
-            context.ok = isDeleteOk(response.statusCode);
-            context.removed = response.body;
-        } else {
-            throw new Error('Expecting list, create, read, update or remove');
-        }
-    };
-}
-function* safeFetch(url: string, options: any) {
-    try {
-        return yield call(() => fetch(url, options)) as any;
-    } catch (ex) {
-        return {
-            statusCode: 0,
-            statusText: 'error',
-        };
-    }
-}
-function headersToObject(headers: any) {
-  if (headers.get && headers.keys) {
-    const keys = headers.keys();
-    const res: any = {};
-    for (const key of keys) {
-      res[key] = headers.get(key);
-    }
-    return res;
-  }
-  return headers;
-}
-export function* fetchMiddleware({ request, response }: any, next: any) {
-    const paramKeys = Object.keys(request.params);
-    const params = paramKeys.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
-    const baseUrl = request.url;
-    const url = params ? `${baseUrl}?${params}` : baseUrl;
-
-    const result = yield safeFetch(url, {
-        body: request.body,
-        credentials: request.credentials,
-        headers: request.headers,
-        method: request.method,
-    }) as any;
-
-    response.statusText = result.statusText;
-    response.statusCode = result.status;
-    response.url = result.url;
-    response.headers = headersToObject(result.headers);
-    try {
-        response.body = yield call(() => result.json());
-    } catch (ex) {
-        response.bodyError = ex;
-    }
-
-    yield* next();
 }
 
 export function* jsonSerializationMiddleware({ request, response }: any, next: any) {

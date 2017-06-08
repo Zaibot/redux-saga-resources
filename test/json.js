@@ -1,10 +1,8 @@
 const assert = require('assert');
 const co = require('co');
 const createSagaMiddleware = require('redux-saga').default;
-const {
-  restMiddleware,
-  jsonSerializationMiddleware
-} = require('../node/middlewares/json');
+const restMiddleware = require('../node/middlewares/rest').default;
+const { jsonSerializationMiddleware } = require('../node/middlewares/json');
 const applyMiddlewares = require('../node/utils/applyMiddlewares').default;
 
 function faker(items) {
