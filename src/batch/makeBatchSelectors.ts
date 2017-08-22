@@ -1,7 +1,7 @@
 import { IBatchOptions } from '.';
 import { IResource } from '../resource';
 
-export default function selectors<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>) {
+export function makeBatchSelectors<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>) {
   const scope = (state: any) => {
     const scopeName = state[`${name}Batch`];
     if (!scopeName) {

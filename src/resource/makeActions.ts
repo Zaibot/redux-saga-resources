@@ -1,6 +1,6 @@
-import { internal } from '../utils/internal';
+import { internal } from '../utils';
 
-export default function actions(name: string) {
+export function makeActions(name: string) {
     return {
         CREATE: internal(`CREATE_${name.toUpperCase()}`),
         CREATE_CANCEL: internal(`CREATE_${name.toUpperCase()}_CANCEL`),

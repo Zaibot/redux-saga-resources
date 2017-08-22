@@ -1,13 +1,13 @@
 import { Action } from 'redux';
 
 import { IResource } from '../resource';
-import { IMiddleware } from '../utils/applyMiddlewares';
+import { IMiddleware } from '../utils';
 
-import makeEditorActions from './actions';
-import makeEditorCreators from './creators';
-import makeEditorReducer from './reducer';
-import makeEditorSaga from './saga';
-import makeEditorSelectors from './selectors';
+import { makeEditorActions } from './makeEditorActions';
+import { makeEditorCreators } from './makeEditorCreators';
+import { makeEditorReducer } from './makeEditorReducer';
+import { makeEditorSaga } from './makeEditorSaga';
+import { makeEditorSelectors } from './makeEditorSelectors';
 
 export interface IActionMiddlewareFactory<T> {
   (descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action>;

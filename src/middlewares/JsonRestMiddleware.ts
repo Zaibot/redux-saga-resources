@@ -1,10 +1,10 @@
 import { call, put } from 'redux-saga/effects';
 import { IResourceDescriptor } from '../resource';
-import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
-import fetchMiddleware from './fetch';
-import restMiddleware from './rest';
-
-const http204 = 204;
+import { IMiddleware, applyMiddlewares } from '../utils';
+import { FetchMiddleware } from './FetchMiddleware';
+import { RestMiddleware } from './RestMiddleware';
+import { JsonTransportMiddleware } from './JsonTransportMiddleware';
+import { fields, stripFields } from '../resource';
 
 export interface IJsonResetParams {
     list?: any;
@@ -17,14 +17,13 @@ export interface IJsonResetParams {
     ok?: boolean;
 }
 
-export default function defaultJsonRestMiddleware<T>(url: string, ...middlewares: Array<IMiddleware<IJsonResetParams>>) {
+export function JsonRestMiddleware<T>(url: string, ...middlewares: Array<IMiddleware<IJsonResetParams>>) {
     return (descriptor: IResourceDescriptor<T>) => {
-        return connectMiddleware(restMiddleware({ id: descriptor.options.id, url }), ...middlewares, jsonSerializationMiddleware, fetchMiddleware);
+        return connectMiddleware(RestMiddleware({ id: descriptor.options.id, url }), ...middlewares, JsonTransportMiddleware, FetchMiddleware);
     };
 }
 
-import { fields, stripFields } from '../resource/fields';
-export function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
+function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
     const middleware = applyMiddlewares(...middlewares);
     return function* ({ action, descriptor }: { action: any, descriptor: IResourceDescriptor<T> }): IterableIterator<any> {
         if (action.type === descriptor.actions.CREATE) {
@@ -110,25 +109,4 @@ export function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             }
         }
     };
-}
-
-export function* jsonSerializationMiddleware({ request, response }: any, next: any) {
-    request.headers.accept = 'application/json';
-
-    if (request.body) {
-        request.headers['content-type'] = 'application/json';
-        request.body = JSON.stringify(request.body);
-    }
-
-    yield* next();
-
-    if (response.statusCode === http204) {
-        // No content
-    } else {
-        if (/^application\/json/.test(response.headers['content-type'])) {
-            if (typeof response.body !== 'object' && response.body !== undefined) {
-                response.body = JSON.parse(response.body);
-            }
-        }
-    }
 }

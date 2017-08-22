@@ -1,8 +1,7 @@
 import { Action } from 'redux';
 import { delay } from 'redux-saga';
 import { call, put, race, take } from 'redux-saga/effects';
-import { IResourceDescriptor } from '../resource';
-import { fields, stripFields } from '../resource/fields';
+import { IResourceDescriptor, fields, stripFields } from '../resource';
 
 const configTimeout = 8000;
 const http404 = 404;
@@ -15,7 +14,7 @@ export interface IHttpApiHandler {
   del(path: string, entity: any): /*CallEffect*/ any;
 }
 
-export function httpMiddleware<T>(api: IHttpApiHandler, path: string) {
+export function HttpMiddleware<T>(api: IHttpApiHandler, path: string) {
   return (descriptor: IResourceDescriptor<T>) => {
     const fnCreate = sagaCreate(api, path, descriptor);
     const fnRead = sagaRead(api, path, descriptor);

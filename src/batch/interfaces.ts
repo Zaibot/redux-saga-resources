@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
 import { IResource } from '../resource';
-import { IMiddleware } from '../utils/applyMiddlewares';
+import { IMiddleware } from '../utils';
 
 export interface IBatchActions<T> {
   APPLY: ActionCreator<{ item: T }>;

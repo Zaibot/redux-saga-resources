@@ -1,7 +1,7 @@
 import { select } from 'redux-saga/effects';
-import { IMiddleware } from '../utils/applyMiddlewares';
+import { IMiddleware } from '../utils';
 
-export default function authBearerMiddleware(selector: () => string): IMiddleware<any> {
+export function AuthBearerMiddleware(selector: () => string): IMiddleware<any> {
     return function* internal({ request }: any, next: any) {
         const token = yield select(selector);
         if (token) {

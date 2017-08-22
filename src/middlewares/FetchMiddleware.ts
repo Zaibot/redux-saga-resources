@@ -5,7 +5,7 @@
 import fetch from 'isomorphic-fetch';
 import { call } from 'redux-saga/effects';
 
-export default function* fetchMiddleware({ request, response }: any, next: any) {
+export function* FetchMiddleware({ request, response }: any, next: any) {
     const paramKeys = Object.keys(request.params);
     const params = paramKeys.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(request.params[key])}`).join('&');
     const baseUrl = request.url;

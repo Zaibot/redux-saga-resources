@@ -1,4 +1,1 @@
-declare module 'isomorphic-fetch' {
-    const fetch: any;
-    export default fetch;
-}
+declare module 'isomorphic-fetch';

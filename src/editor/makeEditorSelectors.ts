@@ -1,7 +1,7 @@
 import { IEditorOptions, IEditorSelectors } from '.';
 import { IResource } from '../resource';
 
-export default function selectors<T>(name: string, options: IEditorOptions, resource: IResource<T>): IEditorSelectors<T> {
+export function makeEditorSelectors<T>(name: string, options: IEditorOptions, resource: IResource<T>): IEditorSelectors<T> {
   const scope = (state: any) => {
     const scopeName = state[`${name}Editor`];
     if (!scopeName) {

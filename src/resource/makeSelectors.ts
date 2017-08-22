@@ -1,7 +1,7 @@
 import 'arrayq';
 import { IResourceOptions, ISelectors } from '.';
 
-export default function selectors<T>(name: string, options: IResourceOptions, hasSameId: (l: T, r: T) => boolean): ISelectors<T> {
+export function makeSelectors<T>(name: string, options: IResourceOptions, hasSameId: (l: T, r: T) => boolean): ISelectors<T> {
     const scope = (state: any) => {
         const s = state[`${name}Resource`];
         if (!s) {

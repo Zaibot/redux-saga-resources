@@ -2,7 +2,7 @@ import { Action } from 'redux';
 import { takeEvery } from 'redux-saga';
 import { put, select } from 'redux-saga/effects';
 import { IActionMiddlewareFactory, IEditorDescriptor, IEditorOptions } from '.';
-import applyMiddlewares, { IMiddleware, IMiddlewareNext } from '../utils/applyMiddlewares';
+import { applyMiddlewares, IMiddleware, IMiddlewareNext } from '../utils';
 
 function interceptor<T>(descriptor: IEditorDescriptor<T>, actionType: string, cb: (action: Action, item: T) => any) {
     return function* (action: Action, next: IMiddlewareNext<Action>) {
@@ -77,7 +77,7 @@ function resourceDeleteContinue<T>(descriptor: IEditorDescriptor<T>, options: IE
     });
 }
 
-export default function makeSaga<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions, middlewares: Array<IActionMiddlewareFactory<T>>) {
+export function makeEditorSaga<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions, middlewares: Array<IActionMiddlewareFactory<T>>) {
     const {
     resource,
   } = descriptor;

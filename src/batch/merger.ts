@@ -1,5 +1,5 @@
 import 'arrayq';
-import { copyFields } from '../resource/fields';
+import { copyFields } from '../resource';
 import { IBatchMerger } from './interfaces';
 
 export class Merger<T> implements IBatchMerger<T> {

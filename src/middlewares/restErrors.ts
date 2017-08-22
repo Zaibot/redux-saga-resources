@@ -17,7 +17,7 @@ const create = getErrorByStatus({ ...commonErrors, [http201]: false, [http204]: 
 const update = getErrorByStatus({ ...commonErrors, [http204]: false });
 const remove = getErrorByStatus({ ...commonErrors, [http204]: false, [http404]: false });
 
-export default {
+export const RestErrors = {
     list,
     read,
     create,

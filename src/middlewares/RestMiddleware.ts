@@ -1,6 +1,6 @@
-import RestErrors from './restErrors';
+import { RestErrors } from './RestErrors';
 
-export default function restMiddleware(options: { url: string; id: string; }) {
+export function RestMiddleware(options: { url: string; id: string; }) {
     return function* internal(context: any, next: any) {
         const request: any = context.request = {
             body: undefined,

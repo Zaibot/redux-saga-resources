@@ -1,8 +1,8 @@
 import { Action } from 'redux';
 import { IEditorDescriptor, IEditorOptions } from '.';
-import { stripFields } from '../resource/fields';
+import { stripFields } from '../resource';
 
-export default function reducer<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions) {
+export function makeEditorReducer<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions) {
     type State = { creating: boolean, reading: boolean, updating: boolean, deleting: boolean, error: string, item: T };
     const emptyState: State = { creating: false, reading: false, updating: false, deleting: false, error: null, item: {} as any };
 

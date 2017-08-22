@@ -1,2 +1,2 @@
 export { IBatchDescriptor, IBatchOptions, IBatch } from './interfaces';
-export { createBatch } from './factory';
+export { createBatch } from './createBatch';

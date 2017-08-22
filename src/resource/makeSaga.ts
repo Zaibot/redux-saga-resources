@@ -1,13 +1,13 @@
 import { takeEvery } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
 import { IResourceDescriptor } from '.';
-import applyMiddlewares, { IMiddleware } from '../utils/applyMiddlewares';
+import { IMiddleware, applyMiddlewares } from '../utils';
 
 function* noop(param: any): IterableIterator<any> {
   // Nothing
 };
 
-export default function makeSaga<T>(descriptor: IResourceDescriptor<T>, ...middlewares: Array<IMiddleware<any>>) {
+export function makeSaga<T>(descriptor: IResourceDescriptor<T>, ...middlewares: Array<IMiddleware<any>>) {
   const actions = [
     ...descriptor.actions.all,
   ];

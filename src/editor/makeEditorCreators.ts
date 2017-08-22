@@ -1,6 +1,6 @@
 import { IEditorActions } from '.';
 
-export default function creators<T>(name: string, actions: IEditorActions) {
+export function makeEditorCreators<T>(name: string, actions: IEditorActions) {
   return {
     doApply: (item: T) => ({ type: actions.APPLY, payload: { item } }),
 

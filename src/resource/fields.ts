@@ -1,5 +1,5 @@
 import { IFieldSelectors } from '.';
-import { internal } from '../utils/internal';
+import { internal } from '../utils';
 
 export const fields = {
     error: Symbol(internal('error')),

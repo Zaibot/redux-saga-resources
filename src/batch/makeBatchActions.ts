@@ -1,10 +1,10 @@
 import actionCreatorFactory from 'redux-typescript-actions';
-import { internal } from '../utils/internal';
+import { internal } from '../utils';
 import { IBatchActions } from './interfaces';
 
 const actionCreator = actionCreatorFactory();
 
-export default function actions<T>(name: string): IBatchActions<T> {
+export function makeBatchActions<T>(name: string): IBatchActions<T> {
   const res = {
     APPLY: actionCreator<{ item: T }>(internal(`BATCH/APPLY_${name.toUpperCase()}`)),
 

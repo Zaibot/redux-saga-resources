@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { IResourceDescriptor } from '.';
-import { listAddOrUpdate, listRemove } from '../utils/list';
+import { listAddOrUpdate, listRemove } from '../utils';
 import { fields } from './fields';
 const requireId = <T>(item: T) => {
     if (!item) {
@@ -22,9 +22,9 @@ const requireTempId = <T>(item: T) => {
     }
     return tempId;
 };
-export default function reducer<T>(descriptor: IResourceDescriptor<T>) {
-    type State = { loading: false | { time: number }, error: Error, list: T[] };
-    const emptyState: State = { loading: false, error: null as Error, list: [] as T[] };
+export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
+    type State = { loading: false | { time: number }, error: Error, list: T[], params: any };
+    const emptyState: State = { loading: false, error: null as Error, list: [] as T[], params: null };
     const { actions } = descriptor;
     return (state: State = emptyState, action: Action | any): State => {
         if (action.type === actions.CREATE) {

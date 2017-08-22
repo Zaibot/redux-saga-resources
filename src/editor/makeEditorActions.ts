@@ -1,6 +1,6 @@
-import { internal } from '../utils/internal';
+import { internal } from '../utils';
 
-export default function actions(name: string) {
+export function makeEditorActions(name: string) {
     return {
         APPLY: internal(`EDITOR/APPLY_${name.toUpperCase()}`),
 

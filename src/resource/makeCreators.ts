@@ -1,6 +1,6 @@
 import { IActions } from '.';
 
-export default function creators<T>(name: string, actions: IActions) {
+export function makeCreators<T>(name: string, actions: IActions) {
   return {
     doCreate: (item: T) => ({ type: actions.CREATE, payload: { item } }),
     doCreateCancel: (item: T) => ({ type: actions.CREATE_CANCEL, payload: { item } }),
