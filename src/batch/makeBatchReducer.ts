@@ -1,18 +1,28 @@
 import { IAction, isType } from '@zaibot/fsa';
 import { IBatchDescriptor, IBatchOptions } from './interfaces';
 
+export interface IState<T> {
+  readonly creating: boolean;
+  readonly deleting: boolean;
+  readonly error: string;
+  readonly item: Partial<T>;
+  readonly items: T[];
+  readonly reading: boolean;
+  readonly updating: boolean;
+}
+
 export function makeBatchReducer<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
   const { actions } = descriptor;
-  const emptyState = {
+  const emptyState: IState<T> = {
     creating: false,
     deleting: false,
     error: null as string,
-    item: {} as T,
-    items: [] as T[],
+    item: {},
+    items: [],
     reading: false,
     updating: false,
   };
-  return (state = emptyState, action: IAction<any>) => {
+  return (state = emptyState, action: IAction) => {
     if (isType(action, actions.APPLY)) {
       return {
         ...state, item: { ...(state.item as any), ...(action.payload.item as any) },

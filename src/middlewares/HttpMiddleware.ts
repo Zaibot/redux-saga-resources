@@ -58,8 +58,7 @@ function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
       // Success.
       const data = yield call(() => res.json());
       yield put(descriptor.actions.CREATE_SUCCESS({
-        item: { ...action.payload.item, ...data },
-        [fields.id]: descriptor.data.id(data),
+        item: { ...action.payload.item, ...data, [fields.id]: descriptor.data.id(data) },
       }));
       yield* next();
     } else if (cancel) {
@@ -94,8 +93,7 @@ function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDe
       // Success.
       const data = yield call(() => res.json());
       yield put(descriptor.actions.READ_SUCCESS({
-        item: { ...action.payload.item, ...data },
-        [fields.id]: key,
+        item: { ...action.payload.item, ...data, [fields.id]: key },
       }));
       yield* next();
     } else if (cancel) {
@@ -131,8 +129,7 @@ function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
       // Success.
       const data = yield call(() => res.json());
       yield put(descriptor.actions.UPDATE_SUCCESS({
-        item: { ...action.payload.item, ...data },
-        [fields.id]: data.id,
+        item: { ...action.payload.item, ...data, [fields.id]: data.id },
       }));
       yield* next();
     } else if (cancel) {

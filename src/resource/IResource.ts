@@ -1,8 +1,8 @@
-import { Action } from 'redux';
+import { IAction } from '@zaibot/fsa/es5';
 import { IResourceDescriptor } from './IResourceDescriptor';
 
 export interface IResource<T> extends IResourceDescriptor<T> {
-  create(props: T | any): any;
-  reducer(state: any, action: Action): any;
+  create(props: Partial<T>): Partial<T>;
+  reducer(state: any, action: IAction): any;
   saga(): any;
 }

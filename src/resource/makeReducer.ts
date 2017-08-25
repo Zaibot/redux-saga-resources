@@ -49,7 +49,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: null,
                         [fields.isModified]: { time: Date.now() },
                         [fields.isCreating]: { time: Date.now() },
@@ -63,7 +64,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: null,
                         [fields.isModified]: false,
                         [fields.isCreating]: false,
@@ -78,7 +80,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: action.payload.reason,
                         [fields.isCreating]: false,
                     };
@@ -91,7 +94,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: null,
                         [fields.isReading]: false,
                     };
@@ -104,7 +108,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: null,
                         [fields.isModified]: { time: Date.now() },
                         [fields.isUpdating]: { time: Date.now() },
@@ -130,7 +135,8 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        item: { ...item, ...(action.payload.item as {}) },
+                        ...item,
+                        ...(action.payload.item as {}),
                         [fields.error]: null,
                         [fields.isModified]: false,
                         [fields.isUpdating]: false,

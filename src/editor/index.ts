@@ -1,15 +1,14 @@
-import { Action } from 'redux';
+import { IAction, IFactory } from '@zaibot/fsa/es5';
 
 import { IResource } from '../resource';
 import { IMiddleware } from '../utils';
 
-import { IFactory } from '@zaibot/fsa/es5';
 import { makeEditorActions } from './makeEditorActions';
 import { makeEditorReducer } from './makeEditorReducer';
 import { makeEditorSaga } from './makeEditorSaga';
 import { makeEditorSelectors } from './makeEditorSelectors';
 
-export type IActionMiddlewareFactory<T> = (descriptor: IEditorDescriptor<T>, options: IEditorOptions) => IMiddleware<Action>;
+export type IActionMiddlewareFactory<T> = (descriptor: IEditorDescriptor<T>, options: IEditorOptions) => IMiddleware<IAction>;
 
 export interface IEditorActions<T> {
   APPLY: IFactory<{ item: Partial<T> }, never>;
@@ -57,7 +56,7 @@ export interface IEditorDescriptor<T> {
   selectors: IEditorSelectors<T>;
 }
 export interface IEditor<T> extends IEditorDescriptor<T> {
-  reducer: (state: any, action: Action) => any;
+  reducer: (state: any, action: IAction) => any;
   saga: () => any;
 }
 

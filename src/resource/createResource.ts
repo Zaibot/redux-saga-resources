@@ -36,8 +36,8 @@ export function createResource<T>(name: string, options: IResourceOptions, ...mi
 
   return {
     ...descriptor,
-    create: (props) => ({
-      ...stripFields(props),
+    create: (props: Partial<T>): Partial<T> => ({
+      ...(stripFields(props) as any),
       [fields.tempId]: makeTempKey(),
     }),
     hasSameId: descriptor.hasSameId,

@@ -34,8 +34,11 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
                 yield call(middleware, context);
                 if (context.ok) {
                     yield put(descriptor.actions.CREATE_SUCCESS({
-                        item: { ...(action.payload.item as {}), ...context.created },
-                        [fields.id]: context.created[descriptor.options.id],
+                        item: {
+                            ...(action.payload.item as {}),
+                            ...context.created,
+                            [fields.id]: context.created[descriptor.options.id],
+                        },
                     }));
                 } else {
                     yield put(descriptor.actions.CREATE_FAILURE({ item: action.payload.item, reason: context.error }));
@@ -50,7 +53,10 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
                 yield call(middleware, context);
                 if (context.ok) {
                     yield put(descriptor.actions.READ_SUCCESS({
-                        item: { ...(action.payload.item as {}), ...context.readed },
+                        item: {
+                            ...(action.payload.item as {}),
+                            ...context.readed,
+                        },
                     }));
                 } else {
                     yield put(descriptor.actions.READ_FAILURE({ item: action.payload.item, reason: context.error }));
@@ -65,7 +71,10 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
                 yield call(middleware, context);
                 if (context.ok) {
                     yield put(descriptor.actions.UPDATE_SUCCESS({
-                        item: { ...(action.payload.item as {}), ...context.updated },
+                        item: {
+                            ...(action.payload.item as {}),
+                            ...context.updated,
+                        },
                     }));
                 } else {
                     yield put(descriptor.actions.UPDATE_FAILURE({ item: action.payload.item, reason: context.error }));
@@ -80,7 +89,10 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
                 yield call(middleware, context);
                 if (context.ok) {
                     yield put(descriptor.actions.DELETE_SUCCESS({
-                        item: { ...(action.payload.item as {}), ...context.deleted },
+                        item: {
+                            ...(action.payload.item as {}),
+                            ...context.deleted,
+                        },
                     }));
                 } else {
                     yield put(descriptor.actions.DELETE_FAILURE({ item: action.payload.item, reason: context.error }));
