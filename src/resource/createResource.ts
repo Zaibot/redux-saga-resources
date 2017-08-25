@@ -6,7 +6,6 @@ import { IResource } from './IResource';
 import { IResourceDescriptor } from './IResourceDescriptor';
 import { IResourceOptions } from './IResourceOptions';
 import { makeActions } from './makeActions';
-import { makeCreators } from './makeCreators';
 import { makeDataSelectors } from './makeDataSelectors';
 import { makeReducer } from './makeReducer';
 import { makeSaga } from './makeSaga';
@@ -27,7 +26,6 @@ export function createResource<T>(name: string, options: IResourceOptions, ...mi
 
   const descriptor: IResourceDescriptor<T> = {
     actions: makeActions(name),
-    creators: makeCreators<T>(name, makeActions(name)),
     data: makeDataSelectors<T>(options),
     fields: selectors,
     hasSameId: entityHasSameId(options),

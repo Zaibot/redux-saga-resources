@@ -4,16 +4,16 @@ const {
   createEditor
 } = require('../node');
 
-describe('resource', () => {
+describe('editor', () => {
   describe('create', () => {
     it('should return an instance', () => {
-      assert(createEditor('test', {}, createResource('test', {})));
+      assert(createEditor('editor.create', {}, createResource('editor.create', {})));
     })
     it('should require a name', () => {
-      assert.throws(() => createEditor('', {}, createResource('test', {})));
+      assert.throws(() => createEditor('', {}, createResource('editor.name', {})));
     })
     it('should require options', () => {
-      assert.throws(() => createEditor('test', undefined, createResource('test', {})));
+      assert.throws(() => createEditor('editor.options', undefined, createResource('editor.options', {})));
     })
     it('should require a resource', () => {
       assert.throws(() => createEditor('', {}));
@@ -21,8 +21,8 @@ describe('resource', () => {
   })
 
   describe('instance', () => {
-    const resource = createResource('test', {});
-    const editor = createEditor('test', {}, resource);
+    const resource = createResource('editor.instance', {});
+    const editor = createEditor('editor.instance', {}, resource);
     it('should have a name', () => {
       assert(editor.name);
     })
@@ -34,9 +34,6 @@ describe('resource', () => {
     })
     it('should have actions.all', () => {
       assert(editor.actions.all);
-    })
-    it('should have creators', () => {
-      assert(editor.creators);
     })
     it('should have selectors', () => {
       assert(editor.selectors);

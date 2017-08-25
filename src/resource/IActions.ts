@@ -1,30 +1,33 @@
-export interface IActions {
-  CREATE: string;
-  CREATE_CANCEL: string;
-  CREATE_SUCCESS: string;
-  CREATE_FAILURE: string;
+import { IFactory } from '@zaibot/fsa';
 
-  READ: string;
-  READ_CANCEL: string;
-  READ_SUCCESS: string;
-  READ_FAILURE: string;
+// tslint:disable-next-line:no-unused-variable
+export interface IActions<T> {
+  CREATE: IFactory<{ item: T }, never>;
+  CREATE_CANCEL: IFactory<{ item: T }, never>;
+  CREATE_SUCCESS: IFactory<{ item: T }, never>;
+  CREATE_FAILURE: IFactory<{ item: T; reason: string; }, never>;
 
-  UPDATE: string;
-  UPDATE_CANCEL: string;
-  UPDATE_SUCCESS: string;
-  UPDATE_FAILURE: string;
+  READ: IFactory<{ item: T }, never>;
+  READ_CANCEL: IFactory<{ item: T }, never>;
+  READ_SUCCESS: IFactory<{ item: T }, never>;
+  READ_FAILURE: IFactory<{ item: T; reason: string; }, never>;
 
-  DELETE: string;
-  DELETE_CANCEL: string;
-  DELETE_SUCCESS: string;
-  DELETE_FAILURE: string;
+  UPDATE: IFactory<{ item: T }, never>;
+  UPDATE_CANCEL: IFactory<{ item: T }, never>;
+  UPDATE_SUCCESS: IFactory<{ item: T }, never>;
+  UPDATE_FAILURE: IFactory<{ item: T; reason: string; }, never>;
 
-  LIST: string;
-  LIST_CANCEL: string;
-  LIST_SUCCESS: string;
-  LIST_FAILURE: string;
+  DELETE: IFactory<{ item: T }, never>;
+  DELETE_CANCEL: IFactory<{ item: T }, never>;
+  DELETE_SUCCESS: IFactory<{ item: T }, never>;
+  DELETE_FAILURE: IFactory<{ item: T; reason: string; }, never>;
 
-  RESET: string;
+  LIST: IFactory<{ params?: any }, never>;
+  LIST_CANCEL: IFactory<{ }, never>;
+  LIST_SUCCESS: IFactory<{ list: T[], params: any; }, never>;
+  LIST_FAILURE: IFactory<{ params?: any; reason: string; }, never>;
 
-  all: string[];
+  RESET: IFactory<{ }, never>;
+
+  all: Array<IFactory<any, never>>;
 }

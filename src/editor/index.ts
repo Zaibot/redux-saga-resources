@@ -3,58 +3,36 @@ import { Action } from 'redux';
 import { IResource } from '../resource';
 import { IMiddleware } from '../utils';
 
+import { IFactory } from '@zaibot/fsa/es5';
 import { makeEditorActions } from './makeEditorActions';
-import { makeEditorCreators } from './makeEditorCreators';
 import { makeEditorReducer } from './makeEditorReducer';
 import { makeEditorSaga } from './makeEditorSaga';
 import { makeEditorSelectors } from './makeEditorSelectors';
 
 export type IActionMiddlewareFactory<T> = (descriptor: IEditorDescriptor<T>, options: IEditorOptions) => IMiddleware<Action>;
 
-export interface IEditorActions {
-  APPLY: string;
+export interface IEditorActions<T> {
+  APPLY: IFactory<{ item: Partial<T> }, never>;
 
-  CREATE: string;
-  CREATE_CANCEL: string;
-  CREATE_CONTINUE: string;
+  CREATE: IFactory<{ item: Partial<T> }, never>;
+  CREATE_CANCEL: IFactory<{ }, never>;
+  CREATE_CONTINUE: IFactory<{ item: T }, never>;
 
-  READ: string;
-  READ_CANCEL: string;
-  READ_CONTINUE: string;
+  READ: IFactory<{ item: T }, never>;
+  READ_CANCEL: IFactory<{ }, never>;
+  READ_CONTINUE: IFactory<{ item: T }, never>;
 
-  UPDATE: string;
-  UPDATE_CANCEL: string;
-  UPDATE_CONTINUE: string;
+  UPDATE: IFactory<{ item: T }, never>;
+  UPDATE_CANCEL: IFactory<{ }, never>;
+  UPDATE_CONTINUE: IFactory<{ item: T }, never>;
 
-  DELETE: string;
-  DELETE_CANCEL: string;
-  DELETE_CONTINUE: string;
+  DELETE: IFactory<{ item: T }, never>;
+  DELETE_CANCEL: IFactory<{ }, never>;
+  DELETE_CONTINUE: IFactory<{ item: T }, never>;
 
-  RESET: string;
+  RESET: IFactory<{ }, never>;
 
-  all: string[];
-}
-
-export interface IEditorCreators<T> {
-  doApply(item: T | any): Action;
-
-  doCreate(item: T | any): Action;
-  doCreateCancel(): Action;
-  doCreateContinue(item: T): Action;
-
-  doRead(item: T): Action;
-  doReadCancel(): Action;
-  doReadContinue(item: T): Action;
-
-  doUpdate(item: T): Action;
-  doUpdateCancel(): Action;
-  doUpdateContinue(item: T): Action;
-
-  doDelete(item: T): Action;
-  doDeleteCancel(): Action;
-  doDeleteContinue(item: T): Action;
-
-  doReset(): Action;
+  all: Array<IFactory<any, never>>;
 }
 
 export interface IEditorSelectors<T> {
@@ -75,8 +53,7 @@ export interface IEditorDescriptor<T> {
   name: string;
   options: IEditorOptions;
   resource: IResource<T>;
-  actions: IEditorActions;
-  creators: IEditorCreators<T>;
+  actions: IEditorActions<T>;
   selectors: IEditorSelectors<T>;
 }
 export interface IEditor<T> extends IEditorDescriptor<T> {
@@ -103,7 +80,6 @@ export function createEditor<T>(name: string, options: IEditorOptions, resource:
 
   const descriptor: IEditorDescriptor<T> = {
     actions: makeEditorActions(name),
-    creators: makeEditorCreators(name, makeEditorActions(name)),
     name,
     options,
     resource,

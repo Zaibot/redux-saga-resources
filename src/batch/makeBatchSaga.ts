@@ -1,7 +1,7 @@
-import { takeEvery } from 'redux-saga';
+import { isType } from '@zaibot/fsa';
+import { takeEvery } from '@zaibot/fsa-saga';
 import { put, select } from 'redux-saga/effects';
 import { IBatchDescriptor, IBatchOptions } from '.';
-import { IAction, isType } from '../actions/creator';
 import { applyMiddlewares, IMiddleware } from '../utils';
 
 function stopMiddleware<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
@@ -26,7 +26,7 @@ function resourceUpdateContinueImmediately<T>(descriptor: IBatchDescriptor<T>, o
       // console.log(`resourceUpdateContinueImmediately`, action);
       const items = descriptor.merger.merge(action.payload.item, action.payload.items);
       for (let i = 0, ii = items.length; i < ii; i++) {
-        yield put(descriptor.resource.creators.doUpdate(items[i]));
+        yield put(descriptor.resource.actions.UPDATE({ item: items[i] }));
       }
     }
     yield* next(action);
@@ -40,9 +40,9 @@ function resourceUpdateContinueDelayed<T>(descriptor: IBatchDescriptor<T>, optio
       for (let i = 0, ii = items.length; i < ii; i++) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(items[i]));
         if (storeItem && descriptor.resource.fields.hasCommited(storeItem)) {
-          yield put(descriptor.resource.creators.doUpdate(items[i]));
+          yield put(descriptor.resource.actions.UPDATE({ item: items[i] }));
         } else {
-          yield put(descriptor.resource.creators.doCreate(items[i]));
+          yield put(descriptor.resource.actions.CREATE({ item: items[i] }));
         }
       }
     }
@@ -66,7 +66,7 @@ function resourceDeleteContinue<T>(descriptor: IBatchDescriptor<T>, options: IBa
       // console.log(`resourceDeleteContinue`, action);
       const items = action.payload.items;
       for (const item of items) {
-        yield put(descriptor.resource.creators.doDelete(item));
+        yield put(descriptor.resource.actions.DELETE({ item }));
       }
     }
     yield* next(action);
@@ -80,7 +80,7 @@ export function makeBatchSaga<T>(descriptor: IBatchDescriptor<T>, options: IBatc
     resource,
   } = descriptor;
   const actions = [
-    ...descriptor.actions.all.map((x: IAction<any>) => x.type),
+    ...descriptor.actions.all,
     ...resource.actions.all,
   ];
   const wares = [...middlewares,

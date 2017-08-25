@@ -32,12 +32,12 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             try {
                 yield call(middleware, context);
                 if (context.ok) {
-                    yield put(descriptor.creators.doCreateSuccess({ ...action.payload.item, ...context.created, [fields.id]: context.created[descriptor.options.id] }));
+                    yield put(descriptor.actions.CREATE_SUCCESS({ ...action.payload.item, ...context.created, [fields.id]: context.created[descriptor.options.id] }));
                 } else {
-                    yield put(descriptor.creators.doCreateFailure(action.payload.item, context.error));
+                    yield put(descriptor.actions.CREATE_FAILURE({ item: action.payload.item, reason: context.error }));
                 }
             } catch (ex) {
-                yield put(descriptor.creators.doCreateFailure(action.payload.item, ex));
+                yield put(descriptor.actions.CREATE_FAILURE({ item: action.payload.item, reason: ex }));
             }
         }
         if (action.type === descriptor.actions.READ) {
@@ -46,15 +46,15 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             try {
                 yield call(middleware, context);
                 if (context.ok) {
-                    yield put(descriptor.creators.doReadSuccess({
+                    yield put(descriptor.actions.READ_SUCCESS({
                         ...action.payload.item,
                         ...context.readed,
                     }));
                 } else {
-                    yield put(descriptor.creators.doReadFailure(action.payload.item, context.error));
+                    yield put(descriptor.actions.READ_FAILURE({ item: action.payload.item, reason: context.error }));
                 }
             } catch (ex) {
-                yield put(descriptor.creators.doReadFailure(action.payload.item, ex));
+                yield put(descriptor.actions.READ_FAILURE({ item: action.payload.item, reason: ex }));
             }
         }
         if (action.type === descriptor.actions.UPDATE) {
@@ -63,15 +63,15 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             try {
                 yield call(middleware, context);
                 if (context.ok) {
-                    yield put(descriptor.creators.doUpdateSuccess({
+                    yield put(descriptor.actions.UPDATE_SUCCESS({
                         ...action.payload.item,
                         ...context.updated,
                     }));
                 } else {
-                    yield put(descriptor.creators.doUpdateFailure(action.payload.item, context.error));
+                    yield put(descriptor.actions.UPDATE_FAILURE({ item: action.payload.item, reason: context.error }));
                 }
             } catch (ex) {
-                yield put(descriptor.creators.doUpdateFailure(action.payload.item, ex));
+                yield put(descriptor.actions.UPDATE_FAILURE({ item: action.payload.item, reason: ex }));
             }
         }
         if (action.type === descriptor.actions.DELETE) {
@@ -80,15 +80,15 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             try {
                 yield call(middleware, context);
                 if (context.ok) {
-                    yield put(descriptor.creators.doDeleteSuccess({
+                    yield put(descriptor.actions.DELETE_SUCCESS({
                         ...action.payload.item,
                         ...context.deleted,
                     }));
                 } else {
-                    yield put(descriptor.creators.doDeleteFailure(action.payload.item, context.error));
+                    yield put(descriptor.actions.DELETE_FAILURE({ item: action.payload.item, reason: context.error }));
                 }
             } catch (ex) {
-                yield put(descriptor.creators.doDeleteFailure(action.payload.item, ex));
+                yield put(descriptor.actions.DELETE_FAILURE({ item: action.payload.item, reason: ex }));
             }
         }
         if (action.type === descriptor.actions.LIST) {
@@ -97,15 +97,19 @@ function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
             try {
                 yield call(middleware, context);
                 if (context.ok) {
-                    yield put(descriptor.creators.doListSuccess(context.listed.map((item: T) => ({
-                        ...(item as any),
-                        [fields.id]: item[descriptor.options.id],
-                    })), action.payload.params || {}));
+                    yield put(descriptor.actions.LIST_SUCCESS(
+                        {
+                            list: context.listed.map((item: T) => ({
+                                ...(item as any),
+                                [fields.id]: item[descriptor.options.id],
+                            }) as T),
+                            params: action.payload.params || {},
+                        }));
                 } else {
-                    yield put(descriptor.creators.doListFailure(context.error, action.payload.params || {}));
+                    yield put(descriptor.actions.LIST_FAILURE({ reason: context.error, params: action.payload.params || {} }));
                 }
             } catch (ex) {
-                yield put(descriptor.creators.doListFailure(ex, action.payload.item));
+                yield put(descriptor.actions.LIST_FAILURE({ reason: ex, params: action.payload.params || {} }));
             }
         }
     };

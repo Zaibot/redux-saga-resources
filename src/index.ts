@@ -1,7 +1,6 @@
 export {
     createResource,
     IActions,
-    ICreators,
     IDataSelectors,
     IFieldSelectors,
     IMiddlewareFactory,
@@ -16,7 +15,6 @@ export {
     IActionMiddlewareFactory,
     IEditor,
     IEditorActions,
-    IEditorCreators,
     IEditorDescriptor,
     IEditorOptions,
     IEditorSelectors,

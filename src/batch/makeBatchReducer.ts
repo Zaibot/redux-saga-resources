@@ -1,4 +1,4 @@
-import { IAction, isType } from '../actions/creator';
+import { IAction, isType } from '@zaibot/fsa';
 import { IBatchDescriptor, IBatchOptions } from './interfaces';
 
 export function makeBatchReducer<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {

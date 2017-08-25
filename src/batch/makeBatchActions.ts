@@ -1,28 +1,28 @@
-import { actionCreator } from '../actions/creator';
+import { Action } from '@zaibot/fsa';
 import { internal } from '../utils';
 import { IBatchActions } from './interfaces';
 
 export function makeBatchActions<T>(name: string): IBatchActions<T> {
   const res = {
-    APPLY: actionCreator<{ item: T }>(internal(`BATCH/APPLY_${name.toUpperCase()}`)),
+    APPLY: Action<{ item: Partial<T> }, never>(internal(`BATCH/APPLY_${name.toUpperCase()}`)),
 
-    CREATE: actionCreator<{ items: T[] }>(internal(`BATCH/CREATE_${name.toUpperCase()}`)),
-    CREATE_CANCEL: actionCreator(internal(`BATCH/CREATE_${name.toUpperCase()}_CANCEL`)),
-    CREATE_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/CREATE_${name.toUpperCase()}_CONTINUE`)),
+    CREATE: Action<{ items: T[] }, never>(internal(`BATCH/CREATE_${name.toUpperCase()}`)),
+    CREATE_CANCEL: Action<never, never>(internal(`BATCH/CREATE_${name.toUpperCase()}_CANCEL`)),
+    CREATE_CONTINUE: Action<{ items: T[], item: T }, never>(internal(`BATCH/CREATE_${name.toUpperCase()}_CONTINUE`)),
 
-    DELETE: actionCreator<{ items: T[] }>(internal(`BATCH/DELETE_${name.toUpperCase()}`)),
-    DELETE_CANCEL: actionCreator(internal(`BATCH/DELETE_${name.toUpperCase()}_CANCEL`)),
-    DELETE_CONTINUE: actionCreator<{ items: T[] }>(internal(`BATCH/DELETE_${name.toUpperCase()}_CONTINUE`)),
+    DELETE: Action<{ items: T[] }, never>(internal(`BATCH/DELETE_${name.toUpperCase()}`)),
+    DELETE_CANCEL: Action<never, never>(internal(`BATCH/DELETE_${name.toUpperCase()}_CANCEL`)),
+    DELETE_CONTINUE: Action<{ items: T[] }, never>(internal(`BATCH/DELETE_${name.toUpperCase()}_CONTINUE`)),
 
-    READ: actionCreator<{ items: T[] }>(internal(`BATCH/READ_${name.toUpperCase()}`)),
-    READ_CANCEL: actionCreator(internal(`BATCH/READ_${name.toUpperCase()}_CANCEL`)),
-    READ_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/READ_${name.toUpperCase()}_SUCCESS`)),
+    READ: Action<{ items: T[] }, never>(internal(`BATCH/READ_${name.toUpperCase()}`)),
+    READ_CANCEL: Action<never, never>(internal(`BATCH/READ_${name.toUpperCase()}_CANCEL`)),
+    READ_CONTINUE: Action<{ items: T[], item: T }, never>(internal(`BATCH/READ_${name.toUpperCase()}_SUCCESS`)),
 
-    RESET: actionCreator(internal(`BATCH/RESET_${name.toUpperCase()}`)),
+    RESET: Action<never, never>(internal(`BATCH/RESET_${name.toUpperCase()}`)),
 
-    UPDATE: actionCreator<{ items: T[] }>(internal(`BATCH/UPDATE_${name.toUpperCase()}`)),
-    UPDATE_CANCEL: actionCreator(internal(`BATCH/UPDATE_${name.toUpperCase()}_CANCEL`)),
-    UPDATE_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/UPDATE_${name.toUpperCase()}_CONTINUE`)),
+    UPDATE: Action<{ items: T[] }, never>(internal(`BATCH/UPDATE_${name.toUpperCase()}`)),
+    UPDATE_CANCEL: Action<never, never>(internal(`BATCH/UPDATE_${name.toUpperCase()}_CANCEL`)),
+    UPDATE_CONTINUE: Action<{ items: T[], item: T }, never>(internal(`BATCH/UPDATE_${name.toUpperCase()}_CONTINUE`)),
   };
   const all = [
     res.APPLY,

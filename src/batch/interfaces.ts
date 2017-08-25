@@ -1,30 +1,30 @@
-import { Action } from 'redux';
-import { Factory } from '../actions/creator';
+import { IAction, IFactory } from '@zaibot/fsa';
 import { IResource } from '../resource';
 import { IMiddleware } from '../utils';
 
+// tslint:disable-next-line:no-unused-variable
 export interface IBatchActions<T> {
-  APPLY: Factory<{ item: T }>;
+  APPLY: IFactory<{ item: Partial<T> }, never>;
 
-  CREATE: Factory<{ items: T[] }>;
-  CREATE_CANCEL: Factory<{ }>;
-  CREATE_CONTINUE: Factory<{ item: T }>;
+  CREATE: IFactory<{ items: T[] }, never>;
+  CREATE_CANCEL: IFactory<{ }, never>;
+  CREATE_CONTINUE: IFactory<{ item: T }, never>;
 
-  READ: Factory<{ items: T[] }>;
-  READ_CANCEL: Factory<{}>;
-  READ_CONTINUE: Factory<{ items: T[], item: T }>;
+  READ: IFactory<{ items: T[] }, never>;
+  READ_CANCEL: IFactory<{ }, never>;
+  READ_CONTINUE: IFactory<{ items: T[], item: T }, never>;
 
-  UPDATE: Factory<{ items: T[] }>;
-  UPDATE_CANCEL: Factory<{ }>;
-  UPDATE_CONTINUE: Factory<{ items: T[], item: T }>;
+  UPDATE: IFactory<{ items: T[] }, never>;
+  UPDATE_CANCEL: IFactory<{ }, never>;
+  UPDATE_CONTINUE: IFactory<{ items: T[], item: T }, never>;
 
-  DELETE: Factory<{ items: T[] }>;
-  DELETE_CANCEL: Factory<{ }>;
-  DELETE_CONTINUE: Factory<{ items: T[] }>;
+  DELETE: IFactory<{ items: T[] }, never>;
+  DELETE_CANCEL: IFactory<{ }, never>;
+  DELETE_CONTINUE: IFactory<{ items: T[] }, never>;
 
-  RESET: Factory<{ }>;
+  RESET: IFactory<{ }, never>;
 
-  all: Array<Factory<any>>;
+  all: Array<IFactory<any, never>>;
 }
 
 export interface IBatchSelectors<T> {
@@ -53,8 +53,8 @@ export interface IBatchDescriptor<T> {
   selectors: IBatchSelectors<T>;
 }
 export interface IBatch<T> extends IBatchDescriptor<T> {
-  reducer: (state: any, action: Action) => any;
+  reducer: (state: any, action: IAction) => any;
   saga: () => any;
 }
 
-export type ISagaMiddlewareFactory<T> = (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) => IMiddleware<Action>;
+export type ISagaMiddlewareFactory<T> = (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) => IMiddleware<IAction>;
