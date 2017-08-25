@@ -1,4 +1,4 @@
-import { IAction } from '@zaibot/fsa';
+import { IAction, isType } from '@zaibot/fsa';
 import { put, take } from '@zaibot/fsa-saga';
 import { delay, Effect } from 'redux-saga';
 import { call, race } from 'redux-saga/effects';
@@ -17,30 +17,31 @@ export interface IHttpApiHandler {
 
 export function HttpMiddleware<T>(api: IHttpApiHandler, path: string) {
   return (descriptor: IResourceDescriptor<T>) => {
+    const { actions: { CREATE, READ, UPDATE, DELETE, LIST } } = descriptor;
     const fnCreate = sagaCreate(api, path, descriptor);
     const fnRead = sagaRead(api, path, descriptor);
     const fnUpdate = sagaUpdate(api, path, descriptor);
     const fnDelete = sagaDelete(api, path, descriptor);
     const fnList = sagaList(api, path, descriptor);
 
-    const mapping = {
-      [descriptor.actions.CREATE.type]: fnCreate,
-      [descriptor.actions.READ.type]: fnRead,
-      [descriptor.actions.UPDATE.type]: fnUpdate,
-      [descriptor.actions.DELETE.type]: fnDelete,
-      [descriptor.actions.LIST.type]: fnList,
-    };
-
     return function*(action: IAction, next: any) {
-      if (action.type in mapping) {
-        yield* mapping[action.type](next)(action);
+      if (isType(action, CREATE)) {
+        yield* fnCreate(next)(action);
+      } else if (isType(action, READ)) {
+        yield* fnRead(next)(action);
+      } else if (isType(action, UPDATE)) {
+        yield* fnUpdate(next)(action);
+      } else if (isType(action, DELETE)) {
+        yield* fnDelete(next)(action);
+      } else if (isType(action, LIST)) {
+        yield* fnList(next)(action);
       }
     };
   };
 }
 
 function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function*(action: any) {
+  return (next: any) => function*(action: IAction) {
     const item = stripFields(action.payload.item);
     delete item[descriptor.options.id];
     const {
@@ -77,7 +78,7 @@ function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function*(action: any) {
+  return (next: any) => function*(action: IAction) {
     const key = descriptor.data.id(action.payload.item);
     const {
       res,
@@ -113,7 +114,7 @@ function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDe
 }
 
 function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function*(action: any) {
+  return (next: any) => function*(action: IAction) {
     const key = descriptor.data.id(action.payload.item);
     const item = stripFields(action.payload.item);
     const {
@@ -150,7 +151,7 @@ function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function*(action: any) {
+  return (next: any) => function*(action: IAction) {
     if (descriptor.fields.neverCommited(action.payload.item)) {
       yield put(descriptor.actions.DELETE_SUCCESS(action.payload.item));
       yield* next();
@@ -189,7 +190,7 @@ function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaList<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function*(action: any) {
+  return (next: any) => function*(action: IAction) {
     try {
       const {
         res,
@@ -208,7 +209,7 @@ function sagaList<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDe
           list: data.map((item: T) => ({
             [fields.id]: descriptor.data.id(item),
             [fields.isRead]: true,
-            ...(item as any),
+            ...(item as {}),
           }) as T),
           params: action.payload.params,
         }));

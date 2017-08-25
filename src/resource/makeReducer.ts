@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { IAction, isType } from '@zaibot/fsa/es5';
 import { IResourceDescriptor } from '.';
 import { listAddOrUpdate, listRemove } from '../utils';
 import { fields } from './fields';
@@ -41,32 +41,29 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
     };
 
     const { actions } = descriptor;
-    return (state = emptyState, action: Action | any): IState<T> => {
-        if (action.type === actions.CREATE) {
+    return (state = emptyState, action: IAction): IState<T> => {
+        if (isType(action, actions.CREATE)) {
             // CREATE
             requireTempId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: null,
                         [fields.isModified]: { time: Date.now() },
                         [fields.isCreating]: { time: Date.now() },
                     };
                 }),
             };
-        }
-        if (action.type === actions.CREATE_SUCCESS) {
+        } else if (isType(action, actions.CREATE_SUCCESS)) {
             // CREATE - SUCCESS
             requireTempId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: null,
                         [fields.isModified]: false,
                         [fields.isCreating]: false,
@@ -74,54 +71,47 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.CREATE_FAILURE) {
+        } else if (isType(action, actions.CREATE_FAILURE)) {
             // CREATE - SUCCESS
             requireTempId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: action.payload.reason,
                         [fields.isCreating]: false,
                     };
                 }),
             };
-        }
-        if (action.type === actions.READ) {
+        } else if (isType(action, actions.READ)) {
             // READ
             requireId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: null,
                         [fields.isReading]: false,
                     };
                 }),
             };
-        }
-        if (action.type === actions.UPDATE) {
+        } else if (isType(action, actions.UPDATE)) {
             // UPDATE
             requireId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: null,
                         [fields.isModified]: { time: Date.now() },
                         [fields.isUpdating]: { time: Date.now() },
                     };
                 }),
             };
-        }
-        if (action.type === actions.UPDATE_CANCEL) {
+        } else if (isType(action, actions.UPDATE_CANCEL)) {
             // UPDATE - CANCEL
             requireId(action.payload.item);
             return {
@@ -133,16 +123,14 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.UPDATE_SUCCESS) {
+        } else if (isType(action, actions.UPDATE_SUCCESS)) {
             // UPDATE - SUCCESS
             requireId(action.payload.item);
             return {
                 ...state,
                 list: listAddOrUpdate(descriptor, state.list, action.payload.item, (item: any) => {
                     return {
-                        ...item,
-                        ...action.payload.item,
+                        item: { ...item, ...(action.payload.item as {}) },
                         [fields.error]: null,
                         [fields.isModified]: false,
                         [fields.isUpdating]: false,
@@ -150,8 +138,7 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.UPDATE_FAILURE) {
+        } else if (isType(action, actions.UPDATE_FAILURE)) {
             // UPDATE - FAILURE
             requireId(action.payload.item);
             return {
@@ -164,8 +151,7 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.DELETE) {
+        } else if (isType(action, actions.DELETE)) {
             // DELETE
             requireId(action.payload.item);
             return {
@@ -179,8 +165,7 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.DELETE_CANCEL) {
+        } else if (isType(action, actions.DELETE_CANCEL)) {
             // DELETE - CANCEL
             requireId(action.payload.item);
             return {
@@ -193,16 +178,14 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.DELETE_SUCCESS) {
+        } else if (isType(action, actions.DELETE_SUCCESS)) {
             // DELETE - SUCCESS
             requireId(action.payload.item);
             return {
                 ...state,
                 list: listRemove(descriptor, state.list, action.payload.item),
             };
-        }
-        if (action.type === actions.DELETE_FAILURE) {
+        } else if (isType(action, actions.DELETE_FAILURE)) {
             // DELETE - FAILURE
             requireId(action.payload.item);
             return {
@@ -215,16 +198,13 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                     };
                 }),
             };
-        }
-        if (action.type === actions.LIST) {
+        } else if (isType(action, actions.LIST)) {
             // LIST
             return { ...state, loading: { time: Date.now() } };
-        }
-        if (action.type === actions.LIST_CANCEL) {
+        } else if (isType(action, actions.LIST_CANCEL)) {
             // LIST - CANCEL
             return { ...state, loading: false, error: null };
-        }
-        if (action.type === actions.LIST_SUCCESS) {
+        } else if (isType(action, actions.LIST_SUCCESS)) {
             // LIST - SUCCESS
             return {
                 ...state,
@@ -238,12 +218,10 @@ export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
                 loading: false,
                 params: action.payload.params,
             };
-        }
-        if (action.type === actions.LIST_FAILURE) {
+        } else if (isType(action, actions.LIST_FAILURE)) {
             // LIST - FAILURE
-            return { ...state, loading: false, error: action.payload.reason };
-        }
-        if (action.type === actions.RESET) {
+            return { ...state, loading: false, error: Error(action.payload.reason) };
+        } else if (isType(action, actions.RESET)) {
             // RESET
             return { ...state, loading: false, error: null, list: [], params: {} };
         }

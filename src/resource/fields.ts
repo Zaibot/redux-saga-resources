@@ -66,7 +66,7 @@ export const selectors: IFieldSelectors<any> = {
     tempId: (item: any) => item[fields.tempId],
 };
 
-export const stripFields = <T>(obj: T): T => {
+export const stripFields = <T>(obj: Partial<T>): Partial<T> => {
     const copy = { ...(obj as any) };
     for (const key of fieldsAll) {
       delete copy[key];
