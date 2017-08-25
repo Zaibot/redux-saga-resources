@@ -1,9 +1,9 @@
-import { IActions } from "./IActions";
-import { ICreators } from "./ICreators";
-import { ISelectors } from "./ISelectors";
-import { IFieldSelectors } from "./IFieldSelectors";
-import { IResourceOptions } from "./IResourceOptions";
-import { IDataSelectors } from "./IDataSelectors";
+import { IActions } from './IActions';
+import { ICreators } from './ICreators';
+import { IDataSelectors } from './IDataSelectors';
+import { IFieldSelectors } from './IFieldSelectors';
+import { IResourceOptions } from './IResourceOptions';
+import { ISelectors } from './ISelectors';
 
 export interface IResourceDescriptor<T> {
   name: string;

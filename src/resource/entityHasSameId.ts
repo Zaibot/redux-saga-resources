@@ -1,5 +1,5 @@
-import { IResourceOptions } from "./IResourceOptions";
-import { fields } from "./fields";
+import { fields } from './fields';
+import { IResourceOptions } from './IResourceOptions';
 
 export function entityHasSameId<T>(options: IResourceOptions) {
     const { id: internalId, tempId } = fields;

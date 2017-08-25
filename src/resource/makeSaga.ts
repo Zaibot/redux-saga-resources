@@ -1,7 +1,7 @@
 import { takeEvery } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
 import { IResourceDescriptor } from '.';
-import { IMiddleware, applyMiddlewares } from '../utils';
+import { applyMiddlewares, IMiddleware } from '../utils';
 
 function* noop(param: any): IterableIterator<any> {
   // Nothing

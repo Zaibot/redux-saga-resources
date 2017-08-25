@@ -1,10 +1,10 @@
 import { IResource } from '../resource';
-import { makeBatchActions } from './makeBatchActions';
 import { IBatch, IBatchDescriptor, IBatchOptions, ISagaMiddlewareFactory } from './interfaces';
-import { Merger } from './merger';
+import { makeBatchActions } from './makeBatchActions';
 import { makeBatchReducer } from './makeBatchReducer';
 import { makeBatchSaga } from './makeBatchSaga';
 import { makeBatchSelectors } from './makeBatchSelectors';
+import { Merger } from './merger';
 
 export function createBatch<T>(name: string, options: IBatchOptions<T>, resource: IResource<T>, ...middlewares: Array<ISagaMiddlewareFactory<T>>): IBatch<T> {
   if (!name) {

@@ -1,5 +1,4 @@
 
-
 const http204 = 204;
 
 export function* JsonTransportMiddleware({ request, response }: any, next: any) {

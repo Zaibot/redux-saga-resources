@@ -1,16 +1,16 @@
 import { makeTempKey } from '../utils';
-import { IResourceOptions } from "./IResourceOptions";
-import { IMiddlewareFactory } from "./IMiddlewareFactory";
-import { IResource } from "./IResource";
-import { makeActions } from "./makeActions";
-import { makeCreators } from "./makeCreators";
-import { makeDataSelectors } from "./makeDataSelectors";
-import { fields, stripFields, selectors } from './fields';
-import { IResourceDescriptor } from "./IResourceDescriptor";
-import { entityHasSameId } from "./entityHasSameId";
-import { makeSelectors } from "./makeSelectors";
-import { makeReducer } from "./makeReducer";
-import { makeSaga } from "./makeSaga";
+import { entityHasSameId } from './entityHasSameId';
+import { fields, selectors, stripFields } from './fields';
+import { IMiddlewareFactory } from './IMiddlewareFactory';
+import { IResource } from './IResource';
+import { IResourceDescriptor } from './IResourceDescriptor';
+import { IResourceOptions } from './IResourceOptions';
+import { makeActions } from './makeActions';
+import { makeCreators } from './makeCreators';
+import { makeDataSelectors } from './makeDataSelectors';
+import { makeReducer } from './makeReducer';
+import { makeSaga } from './makeSaga';
+import { makeSelectors } from './makeSelectors';
 
 export function createResource<T>(name: string, options: IResourceOptions, ...middlewares: Array<IMiddlewareFactory<T>>): IResource<T> {
   if (!name) {

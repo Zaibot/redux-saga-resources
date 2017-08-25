@@ -6,7 +6,8 @@ export interface IMiddleware<T extends Object> {
 }
 
 export function applyMiddlewares<T extends Object>(...middlewares: Array<IMiddleware<T>>): IMiddleware<T> {
-  const compiled = middlewares.reduceRight((next: (param: T, last: IMiddleware<T>) => IterableIterator<any>, current: IMiddleware<T>): (param: T, last: IMiddleware<T>) => IterableIterator<any> => {
+  type Middleware = (param: T, last: IMiddleware<T>) => IterableIterator<any>;
+  const compiled = middlewares.reduceRight((next: Middleware, current: IMiddleware<T>): Middleware => {
     return function* (param, last) {
       yield* current(param, function* (additional) {
         yield* next(param, last);

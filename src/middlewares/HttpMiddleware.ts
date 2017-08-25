@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { delay } from 'redux-saga';
 import { call, put, race, take } from 'redux-saga/effects';
-import { IResourceDescriptor, fields, stripFields } from '../resource';
+import { fields, IResourceDescriptor, stripFields } from '../resource';
 
 const configTimeout = 8000;
 const http404 = 404;

@@ -1,5 +1,5 @@
-import { IResourceDescriptor } from "./IResourceDescriptor";
-import { Action } from "redux";
+import { Action } from 'redux';
+import { IResourceDescriptor } from './IResourceDescriptor';
 
 export interface IResource<T> extends IResourceDescriptor<T> {
   create(props: T | any): any;

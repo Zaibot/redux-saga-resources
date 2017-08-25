@@ -1,9 +1,7 @@
 const assert = require('assert');
 const co = require('co');
 const createSagaMiddleware = require('redux-saga').default;
-const restMiddleware = require('../node/middlewares/rest').default;
-const { jsonSerializationMiddleware } = require('../node/middlewares/json');
-const applyMiddlewares = require('../node/utils/applyMiddlewares').default;
+const { RestMiddleware, JsonTransportMiddleware, applyMiddlewares } = require('../node');
 
 function faker(items) {
   var res = {
@@ -71,10 +69,10 @@ describe('middlewares', () => {
         text: 'Item 3'
       }
     ]);
-    const middleware = applyMiddlewares(restMiddleware({
+    const middleware = applyMiddlewares(RestMiddleware({
       id: 'id',
       url: '/api/fake'
-    }), jsonSerializationMiddleware, fakeFetch.middleware);
+    }), JsonTransportMiddleware, fakeFetch.middleware);
     it('should fake list', co.wrap(function* () {
       const context = {
         list: {}
@@ -113,10 +111,10 @@ describe('middlewares', () => {
         text: 'Item 3'
       }
     ]);
-    const middleware = applyMiddlewares(restMiddleware({
+    const middleware = applyMiddlewares(RestMiddleware({
       id: 'id',
       url: '/api/fake'
-    }), jsonSerializationMiddleware, fakeFetch.middleware);
+    }), JsonTransportMiddleware, fakeFetch.middleware);
     it('should fake create', co.wrap(function* () {
       const context = {
         create: {
@@ -150,10 +148,10 @@ describe('middlewares', () => {
         text: 'Item 3'
       }
     ]);
-    const middleware = applyMiddlewares(restMiddleware({
+    const middleware = applyMiddlewares(RestMiddleware({
       id: 'id',
       url: '/api/fake'
-    }), jsonSerializationMiddleware, fakeFetch.middleware);
+    }), JsonTransportMiddleware, fakeFetch.middleware);
     it('should fake read', co.wrap(function* () {
       const context = {
         read: {
@@ -185,10 +183,10 @@ describe('middlewares', () => {
         text: 'Item 3'
       }
     ]);
-    const middleware = applyMiddlewares(restMiddleware({
+    const middleware = applyMiddlewares(RestMiddleware({
       id: 'id',
       url: '/api/fake'
-    }), jsonSerializationMiddleware, fakeFetch.middleware);
+    }), JsonTransportMiddleware, fakeFetch.middleware);
     it('should fake update', co.wrap(function* () {
       const context = {
         update: {
@@ -224,10 +222,10 @@ describe('middlewares', () => {
         text: 'Item 3'
       }
     ]);
-    const middleware = applyMiddlewares(restMiddleware({
+    const middleware = applyMiddlewares(RestMiddleware({
       id: 'id',
       url: '/api/fake'
-    }), jsonSerializationMiddleware, fakeFetch.middleware);
+    }), JsonTransportMiddleware, fakeFetch.middleware);
     it('should fake delete', co.wrap(function* () {
       const context = {
         remove: {
