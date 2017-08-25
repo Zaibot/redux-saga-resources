@@ -14,16 +14,16 @@
     "redux-saga": "^0.14.3"
   },
   "devDependencies": {
-    "@types/isomorphic-fetch": "0.0.33",
-    "@zaibot/tslint-preset": "^1.0.0",
+    "@types/isomorphic-fetch": "0.0.34",
+    "@zaibot/tslint-preset": "^1.0.2",
     "assert": "^1.4.1",
-    "babel-core": "^6.22.1",
+    "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-node": "^5.1.1",
     "co": "^4.6.0",
-    "mocha": "^3.2.0",
-    "tslint": "^4.5.1",
-    "typescript": "^2.1.5"
+    "mocha": "^3.5.0",
+    "tslint": "^5.6.0",
+    "typescript": "^2.4.2"
   },
   "scripts": {
     "prepublish": "npm run lint && npm run build && npm run test",
