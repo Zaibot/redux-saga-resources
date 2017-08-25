@@ -2,6 +2,7 @@ import { Action } from 'redux';
 import { IResourceDescriptor } from '.';
 import { listAddOrUpdate, listRemove } from '../utils';
 import { fields } from './fields';
+
 const requireId = <T>(item: T) => {
     if (!item) {
         throw new Error(`Expecting item.`);
@@ -12,6 +13,7 @@ const requireId = <T>(item: T) => {
     }
     return id;
 };
+
 const requireTempId = <T>(item: T) => {
     if (!item) {
         throw new Error(`Expecting item.`);
@@ -22,11 +24,24 @@ const requireTempId = <T>(item: T) => {
     }
     return tempId;
 };
+
+export interface IState<T> {
+    readonly error: Error;
+    readonly list: T[];
+    readonly loading: false | { time: number };
+    readonly params: any;
+}
+
 export function makeReducer<T>(descriptor: IResourceDescriptor<T>) {
-    type State = { loading: false | { time: number }, error: Error, list: T[], params: any };
-    const emptyState: State = { loading: false, error: null as Error, list: [] as T[], params: null };
+    const emptyState: IState<T> = {
+        error: null,
+        list: [],
+        loading: false,
+        params: null,
+    };
+
     const { actions } = descriptor;
-    return (state: State = emptyState, action: Action | any): State => {
+    return (state = emptyState, action: Action | any): IState<T> => {
         if (action.type === actions.CREATE) {
             // CREATE
             requireTempId(action.payload.item);

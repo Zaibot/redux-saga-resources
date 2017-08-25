@@ -91,4 +91,4 @@ export const extractFields = (obj: any): any => {
     };
 };
 
-export const copyFields = <T>(target: any, fieldsSource: any) => ({ ...target, ...extractFields(fieldsSource) });
+export const copyFields = <T>(target: any, fieldsSource: any): T => ({ ...target, ...extractFields(fieldsSource) });

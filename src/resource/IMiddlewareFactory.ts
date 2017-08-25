@@ -1,6 +1,4 @@
 import { IMiddleware } from '../utils';
 import { IResourceDescriptor } from './IResourceDescriptor';
 
-export interface IMiddlewareFactory<T> {
-  (resource: IResourceDescriptor<T>): IMiddleware<any>;
-}
+export type IMiddlewareFactory<T> = (resource: IResourceDescriptor<T>) => IMiddleware<any>;

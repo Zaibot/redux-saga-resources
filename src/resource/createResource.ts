@@ -26,13 +26,13 @@ export function createResource<T>(name: string, options: IResourceOptions, ...mi
   };
 
   const descriptor: IResourceDescriptor<T> = {
-    name,
-    options,
     actions: makeActions(name),
     creators: makeCreators<T>(name, makeActions(name)),
     data: makeDataSelectors<T>(options),
     fields: selectors,
     hasSameId: entityHasSameId(options),
+    name,
+    options,
     selectors: makeSelectors<T>(name, options, entityHasSameId(options)),
   };
 

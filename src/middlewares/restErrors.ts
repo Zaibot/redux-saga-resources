@@ -11,16 +11,16 @@ const commonErrors = {
     [http404]: `communication error`,
     [http500]: `server issue`,
 };
+const create = getErrorByStatus({ ...commonErrors, [http201]: false, [http204]: false });
 const list = getErrorByStatus({ ...commonErrors });
 const read = getErrorByStatus({ ...commonErrors });
-const create = getErrorByStatus({ ...commonErrors, [http201]: false, [http204]: false });
-const update = getErrorByStatus({ ...commonErrors, [http204]: false });
 const remove = getErrorByStatus({ ...commonErrors, [http204]: false, [http404]: false });
+const update = getErrorByStatus({ ...commonErrors, [http204]: false });
 
 export const RestErrors = {
+    create,
     list,
     read,
-    create,
-    update,
     remove,
+    update,
 };

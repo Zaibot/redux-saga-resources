@@ -5,22 +5,22 @@ import { IActionMiddlewareFactory, IEditorDescriptor, IEditorOptions } from '.';
 import { applyMiddlewares, IMiddleware, IMiddlewareNext } from '../utils';
 
 function interceptor<T>(descriptor: IEditorDescriptor<T>, actionType: string, cb: (action: Action, item: T) => any) {
-    return function* (action: Action, next: IMiddlewareNext<Action>) {
+    return function*(action: Action, next: IMiddlewareNext<Action>) {
         if (action.type === actionType) {
             const item: T = yield select(descriptor.selectors.item);
             yield* cb(action, item);
         }
         yield* next(action);
     };
-};
+}
 
 function stopMiddleware<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return function* (action: Action, next: any): IterableIterator<any> {
+    return function*(action: Action, next: any): IterableIterator<any> {
         // Nothing.
     };
 }
 function resourceCreateImmediately<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.CREATE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.CREATE, function*(action: Action, item: T) {
         yield put(descriptor.resource.creators.doCreate(item));
     });
 }
@@ -30,33 +30,33 @@ function resourceCreateDelayed<T>(descriptor: IEditorDescriptor<T>, options: IEd
     });
 }
 function resourceCreateContinueImmediately<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.CREATE_CONTINUE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.CREATE_CONTINUE, function*(action: Action, item: T) {
         yield put(descriptor.resource.creators.doUpdate(item));
     });
 }
 function resourceCreateContinueDelayed<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.CREATE_CONTINUE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.CREATE_CONTINUE, function*(action: Action, item: T) {
         yield put(descriptor.resource.creators.doCreate(item));
     });
 }
 function resourceRead<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.READ, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.READ, function*(action: Action, item: T) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
         yield put(descriptor.creators.doApply(storeItem));
     });
 }
 function resourceUpdate<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.UPDATE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.UPDATE, function*(action: Action, item: T) {
         yield put(descriptor.creators.doApply(item));
     });
 }
 function resourceUpdateContinueImmediately<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function*(action: Action, item: T) {
         yield put(descriptor.resource.creators.doUpdate(item));
     });
 }
 function resourceUpdateContinueDelayed<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.UPDATE_CONTINUE, function*(action: Action, item: T) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
         if (storeItem && descriptor.resource.fields.hasCommited(storeItem)) {
             yield put(descriptor.resource.creators.doUpdate(item));
@@ -66,13 +66,13 @@ function resourceUpdateContinueDelayed<T>(descriptor: IEditorDescriptor<T>, opti
     });
 }
 function resourceDelete<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.DELETE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.DELETE, function*(action: Action, item: T) {
         const storeItem: T = yield select(descriptor.resource.selectors.itemByItem(item));
         yield put(descriptor.creators.doApply(storeItem));
     });
 }
 function resourceDeleteContinue<T>(descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action> {
-    return interceptor(descriptor, descriptor.actions.DELETE_CONTINUE, function* (action: Action, item: T) {
+    return interceptor(descriptor, descriptor.actions.DELETE_CONTINUE, function*(action: Action, item: T) {
         yield put(descriptor.resource.creators.doDelete(item));
     });
 }

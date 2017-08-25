@@ -9,7 +9,7 @@ export {
     IResourceDescriptor,
     IResourceOptions,
     ISelectors,
-    Status
+    Status,
 } from './resource';
 export {
     createEditor,
@@ -19,13 +19,13 @@ export {
     IEditorCreators,
     IEditorDescriptor,
     IEditorOptions,
-    IEditorSelectors
+    IEditorSelectors,
 } from './editor';
 export {
     createBatch,
     IBatchDescriptor,
     IBatchOptions,
-    IBatch
+    IBatch,
 } from './batch';
 export {
     FetchMiddleware,
@@ -33,7 +33,7 @@ export {
     RestMiddleware,
     AuthBearerMiddleware,
     JsonRestMiddleware,
-    JsonTransportMiddleware
+    JsonTransportMiddleware,
 } from './middlewares';
 export {
     applyMiddlewares,
@@ -44,5 +44,5 @@ export {
     listAddOrUpdate,
     listRemove,
     isTempKey,
-    makeTempKey
+    makeTempKey,
 } from './utils';

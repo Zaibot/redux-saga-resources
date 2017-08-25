@@ -25,7 +25,7 @@ export function JsonRestMiddleware<T>(url: string, ...middlewares: Array<IMiddle
 
 function connectMiddleware<T>(...middlewares: Array<IMiddleware<any>>) {
     const middleware = applyMiddlewares(...middlewares);
-    return function* ({ action, descriptor }: { action: any, descriptor: IResourceDescriptor<T> }): IterableIterator<any> {
+    return function*({ action, descriptor }: { action: any, descriptor: IResourceDescriptor<T> }): IterableIterator<any> {
         if (action.type === descriptor.actions.CREATE) {
             // Create
             const context: any = { create: stripFields(action.payload.item) };

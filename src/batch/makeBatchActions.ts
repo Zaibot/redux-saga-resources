@@ -1,8 +1,6 @@
-import actionCreatorFactory from 'redux-typescript-actions';
+import { actionCreator } from '../actions/creator';
 import { internal } from '../utils';
 import { IBatchActions } from './interfaces';
-
-const actionCreator = actionCreatorFactory();
 
 export function makeBatchActions<T>(name: string): IBatchActions<T> {
   const res = {
@@ -10,7 +8,7 @@ export function makeBatchActions<T>(name: string): IBatchActions<T> {
 
     CREATE: actionCreator<{ items: T[] }>(internal(`BATCH/CREATE_${name.toUpperCase()}`)),
     CREATE_CANCEL: actionCreator(internal(`BATCH/CREATE_${name.toUpperCase()}_CANCEL`)),
-    CREATE_CONTINUE: actionCreator < { items: T[], item: T } > (internal(`BATCH/CREATE_${name.toUpperCase()}_CONTINUE`)),
+    CREATE_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/CREATE_${name.toUpperCase()}_CONTINUE`)),
 
     DELETE: actionCreator<{ items: T[] }>(internal(`BATCH/DELETE_${name.toUpperCase()}`)),
     DELETE_CANCEL: actionCreator(internal(`BATCH/DELETE_${name.toUpperCase()}_CANCEL`)),
@@ -18,13 +16,13 @@ export function makeBatchActions<T>(name: string): IBatchActions<T> {
 
     READ: actionCreator<{ items: T[] }>(internal(`BATCH/READ_${name.toUpperCase()}`)),
     READ_CANCEL: actionCreator(internal(`BATCH/READ_${name.toUpperCase()}_CANCEL`)),
-    READ_CONTINUE: actionCreator < { items: T[], item: T } > (internal(`BATCH/READ_${name.toUpperCase()}_SUCCESS`)),
+    READ_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/READ_${name.toUpperCase()}_SUCCESS`)),
 
     RESET: actionCreator(internal(`BATCH/RESET_${name.toUpperCase()}`)),
 
     UPDATE: actionCreator<{ items: T[] }>(internal(`BATCH/UPDATE_${name.toUpperCase()}`)),
     UPDATE_CANCEL: actionCreator(internal(`BATCH/UPDATE_${name.toUpperCase()}_CANCEL`)),
-    UPDATE_CONTINUE: actionCreator < { items: T[], item: T } > (internal(`BATCH/UPDATE_${name.toUpperCase()}_CONTINUE`)),
+    UPDATE_CONTINUE: actionCreator<{ items: T[], item: T }>(internal(`BATCH/UPDATE_${name.toUpperCase()}_CONTINUE`)),
   };
   const all = [
     res.APPLY,

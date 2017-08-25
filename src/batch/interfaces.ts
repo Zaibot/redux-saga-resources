@@ -1,30 +1,30 @@
 import { Action } from 'redux';
-import { ActionCreator, EmptyActionCreator } from 'redux-typescript-actions';
+import { Factory } from '../actions/creator';
 import { IResource } from '../resource';
 import { IMiddleware } from '../utils';
 
 export interface IBatchActions<T> {
-  APPLY: ActionCreator<{ item: T }>;
+  APPLY: Factory<{ item: T }>;
 
-  CREATE: ActionCreator<{ items: T[] }>;
-  CREATE_CANCEL: EmptyActionCreator;
-  CREATE_CONTINUE: ActionCreator<{ item: T }>;
+  CREATE: Factory<{ items: T[] }>;
+  CREATE_CANCEL: Factory<{ }>;
+  CREATE_CONTINUE: Factory<{ item: T }>;
 
-  READ: ActionCreator<{ items: T[] }>;
-  READ_CANCEL: EmptyActionCreator;
-  READ_CONTINUE: ActionCreator<{ items: T[], item: T }>;
+  READ: Factory<{ items: T[] }>;
+  READ_CANCEL: Factory<{}>;
+  READ_CONTINUE: Factory<{ items: T[], item: T }>;
 
-  UPDATE: ActionCreator<{ items: T[] }>;
-  UPDATE_CANCEL: EmptyActionCreator;
-  UPDATE_CONTINUE: ActionCreator<{ items: T[], item: T }>;
+  UPDATE: Factory<{ items: T[] }>;
+  UPDATE_CANCEL: Factory<{ }>;
+  UPDATE_CONTINUE: Factory<{ items: T[], item: T }>;
 
-  DELETE: ActionCreator<{ items: T[] }>;
-  DELETE_CANCEL: EmptyActionCreator;
-  DELETE_CONTINUE: ActionCreator<{ items: T[] }>;
+  DELETE: Factory<{ items: T[] }>;
+  DELETE_CANCEL: Factory<{ }>;
+  DELETE_CONTINUE: Factory<{ items: T[] }>;
 
-  RESET: EmptyActionCreator;
+  RESET: Factory<{ }>;
 
-  all: Array<ActionCreator<any>>;
+  all: Array<Factory<any>>;
 }
 
 export interface IBatchSelectors<T> {
@@ -57,6 +57,4 @@ export interface IBatch<T> extends IBatchDescriptor<T> {
   saga: () => any;
 }
 
-export interface ISagaMiddlewareFactory<T> {
-  (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>): IMiddleware<Action>;
-}
+export type ISagaMiddlewareFactory<T> = (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) => IMiddleware<Action>;

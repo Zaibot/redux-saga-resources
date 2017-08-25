@@ -1,28 +1,27 @@
-import { Action } from 'redux';
 import { takeEvery } from 'redux-saga';
 import { put, select } from 'redux-saga/effects';
-import { isType } from 'redux-typescript-actions';
 import { IBatchDescriptor, IBatchOptions } from '.';
+import { IAction, isType } from '../actions/creator';
 import { applyMiddlewares, IMiddleware } from '../utils';
 
 function stopMiddleware<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next): Iterable<any> {
+  return function*(action, next): Iterable<any> {
     // Nothing.
-  };
+  } as IMiddleware<any>;
 }
 
 function resourceUpdate<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next) {
+  return function*(action, next) {
     if (isType(action, descriptor.actions.UPDATE)) {
       // console.log(`resourceUpdate`, action);
       const item = descriptor.merger.combine(action.payload.items);
       yield put(descriptor.actions.APPLY({ item }));
     }
     yield* next(action);
-  };
+  } as IMiddleware<any>;
 }
 function resourceUpdateContinueImmediately<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next) {
+  return function*(action, next) {
     if (isType(action, descriptor.actions.UPDATE_CONTINUE)) {
       // console.log(`resourceUpdateContinueImmediately`, action);
       const items = descriptor.merger.merge(action.payload.item, action.payload.items);
@@ -31,10 +30,10 @@ function resourceUpdateContinueImmediately<T>(descriptor: IBatchDescriptor<T>, o
       }
     }
     yield* next(action);
-  };
+  } as IMiddleware<any>;
 }
 function resourceUpdateContinueDelayed<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next) {
+  return function*(action, next) {
     if (isType(action, descriptor.actions.UPDATE_CONTINUE)) {
       // console.log(`resourceUpdateContinueDelayed`, action);
       const items = descriptor.merger.merge(action.payload.item, action.payload.items);
@@ -48,42 +47,40 @@ function resourceUpdateContinueDelayed<T>(descriptor: IBatchDescriptor<T>, optio
       }
     }
     yield* next(action);
-  };
+  } as IMiddleware<any>;
 }
 
 function resourceDelete<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next) {
+  return function*(action, next) {
     if (isType(action, descriptor.actions.DELETE)) {
       // console.log(`resourceDelete`, action);
       const item = descriptor.merger.combine(action.payload.items);
       yield put(descriptor.actions.APPLY({ item }));
     }
     yield* next(action);
-  };
+  } as IMiddleware<any>;
 }
 function resourceDeleteContinue<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
-  return <IMiddleware<any>>function* (action, next) {
+  return function*(action, next) {
     if (isType(action, descriptor.actions.DELETE_CONTINUE)) {
       // console.log(`resourceDeleteContinue`, action);
       const items = action.payload.items;
-      for (let item of items) {
+      for (const item of items) {
         yield put(descriptor.resource.creators.doDelete(item));
       }
     }
     yield* next(action);
-  };
+  } as IMiddleware<any>;
 }
 
-export interface IMiddlewareFactory<T> {
-  (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>): IMiddleware<any>;
-}
+export type IMiddlewareFactory<T> = (descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) => IMiddleware<any>;
 
 export function makeBatchSaga<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>, middlewares: Array<IMiddlewareFactory<T>>) {
   const {
     resource,
   } = descriptor;
   const actions = [
-    ...descriptor.actions.all.map((x: Action) => x.type),
+    ...descriptor.actions.all.map((x: IAction<any>) => x.type),
     ...resource.actions.all,
   ];
   const wares = [...middlewares,

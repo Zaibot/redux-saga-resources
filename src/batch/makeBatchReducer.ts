@@ -1,10 +1,18 @@
-import { Action } from 'redux';
-import { isType } from 'redux-typescript-actions';
+import { IAction, isType } from '../actions/creator';
 import { IBatchDescriptor, IBatchOptions } from './interfaces';
 
 export function makeBatchReducer<T>(descriptor: IBatchDescriptor<T>, options: IBatchOptions<T>) {
   const { actions } = descriptor;
-  return (state = { creating: false, reading: false, updating: false, deleting: false, error: null as string, items: [] as T[], item: {} as T }, action: Action) => {
+  const emptyState = {
+    creating: false,
+    deleting: false,
+    error: null as string,
+    item: {} as T,
+    items: [] as T[],
+    reading: false,
+    updating: false,
+  };
+  return (state = emptyState, action: IAction<any>) => {
     if (isType(action, actions.APPLY)) {
       return {
         ...state, item: { ...(state.item as any), ...(action.payload.item as any) },

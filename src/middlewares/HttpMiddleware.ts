@@ -30,7 +30,7 @@ export function HttpMiddleware<T>(api: IHttpApiHandler, path: string) {
       [descriptor.actions.LIST]: fnList,
     };
 
-    return function* (action: Action, next: any) {
+    return function*(action: Action, next: any) {
       if (action.type in mapping) {
         yield* mapping[action.type](next)(action);
       }
@@ -39,7 +39,7 @@ export function HttpMiddleware<T>(api: IHttpApiHandler, path: string) {
 }
 
 function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function* (action: any) {
+  return (next: any) => function*(action: any) {
     const item = stripFields(action.payload.item);
     delete item[descriptor.options.id];
     const {
@@ -77,7 +77,7 @@ function sagaCreate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function* (action: any) {
+  return (next: any) => function*(action: any) {
     const key = descriptor.data.id(action.payload.item);
     const {
       res,
@@ -114,7 +114,7 @@ function sagaRead<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDe
 }
 
 function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function* (action: any) {
+  return (next: any) => function*(action: any) {
     const key = descriptor.data.id(action.payload.item);
     const item = stripFields(action.payload.item);
     const {
@@ -152,7 +152,7 @@ function sagaUpdate<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function* (action: any) {
+  return (next: any) => function*(action: any) {
     if (descriptor.fields.neverCommited(action.payload.item)) {
       yield put(descriptor.creators.doDeleteSuccess(action.payload.item));
       yield* next();
@@ -191,7 +191,7 @@ function sagaDelete<T>(api: IHttpApiHandler, path: string, descriptor: IResource
 }
 
 function sagaList<T>(api: IHttpApiHandler, path: string, descriptor: IResourceDescriptor<T>) {
-  return (next: any) => function* (action: any) {
+  return (next: any) => function*(action: any) {
     try {
       const {
         res,

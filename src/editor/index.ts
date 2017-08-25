@@ -9,9 +9,7 @@ import { makeEditorReducer } from './makeEditorReducer';
 import { makeEditorSaga } from './makeEditorSaga';
 import { makeEditorSelectors } from './makeEditorSelectors';
 
-export interface IActionMiddlewareFactory<T> {
-  (descriptor: IEditorDescriptor<T>, options: IEditorOptions): IMiddleware<Action>;
-}
+export type IActionMiddlewareFactory<T> = (descriptor: IEditorDescriptor<T>, options: IEditorOptions) => IMiddleware<Action>;
 
 export interface IEditorActions {
   APPLY: string;
@@ -104,18 +102,18 @@ export function createEditor<T>(name: string, options: IEditorOptions, resource:
   };
 
   const descriptor: IEditorDescriptor<T> = {
-    resource,
-    name,
-    options,
     actions: makeEditorActions(name),
     creators: makeEditorCreators(name, makeEditorActions(name)),
+    name,
+    options,
+    resource,
     selectors: makeEditorSelectors(name, options, resource),
   };
 
   return {
     ...descriptor,
-    resource,
     reducer: makeEditorReducer(descriptor, options),
+    resource,
     saga: makeEditorSaga(descriptor, options, middlewares),
   };
 }

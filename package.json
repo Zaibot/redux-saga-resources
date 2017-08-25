@@ -2,8 +2,10 @@
   "name": "redux-saga-resources",
   "version": "0.1.22",
   "description": "",
-  "typings": "es6/index.d.ts",
-  "main": "es6/index.js",
+  "typings": "node/index.d.ts",
+  "main": "node/index.js",
+  "esnext:main": "es6/index.js",
+  "typescript:main": "src/index.ts",
   "dependencies": {
     "arrayq": "^0.1.14"
   },
@@ -32,8 +34,8 @@
     "compile": "npm run compile:ts && npm run compile:node",
     "compile:ts": "tsc -p tsconfig.json",
     "compile:node": "babel es6 --out-dir node --presets node --plugins transform-runtime --copy-files",
-    "lint": "tslint -c tslint.json --type-check src/**/*.ts",
-    "lint:fix": "tslint -c tslint.json --type-check src/**/*.ts --fix",
+    "lint": "tslint -c tslint.json --type-check --project tsconfig.json",
+    "lint:fix": "tslint -c tslint.json --type-check --project tsconfig.json --fix",
     "test": "mocha test",
     "watch": "nodemon -w src -w test -e \"ts js\" --exec \"npm run compile && npm run test\""
   },

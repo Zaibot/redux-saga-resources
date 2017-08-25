@@ -34,8 +34,8 @@ export function createBatch<T>(name: string, options: IBatchOptions<T>, resource
 
   return {
     ...descriptor,
-    resource,
     reducer: makeBatchReducer(descriptor, options),
+    resource,
     saga: makeBatchSaga(descriptor, options, middlewares),
   };
 }
